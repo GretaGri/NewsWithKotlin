@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">News With Kotlin</string>
+    <string name="action_settings">Settings</string>
+    <string name="no_news">No news. \nTry to refresh page later</string>
+</resources>
