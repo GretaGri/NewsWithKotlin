@@ -3,12 +3,17 @@ package com.example.android.newswithkotlin
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    //recyclerView
+    lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +28,21 @@ class MainActivity : AppCompatActivity() {
 
         //TODO: Add content to recyclerView.(kt files needed: POJO - News, RecyclerViewAdapter,
         // TODO: AsyncTaskLoader, QueryUtils (future dev: SettingsActivity, SearchActivity))
+
+        //Add a recyclerView with dummy data
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        val myList: ArrayList<String> = ArrayList()
+        for (i in 1..10)
+            myList.add("news $i")
+        recyclerView = findViewById(R.id.recycler_view)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = DummyListAdapter(myList, this)
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
