@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -78,15 +79,16 @@ class MainActivity : AppCompatActivity() {
 
     class GetNewsTask(textView: TextView) : AsyncTask<Unit, Unit, String>() {
 
-        // val innerTextView: TextView? = textView
+        val noNewsTextView: TextView? = textView
 
         override fun doInBackground(vararg params: Unit?): String? {
-            val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=test&show-tags=contributor")
+            val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
             val httpClient = url.openConnection() as HttpURLConnection
             if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
                 try {
                     val stream = BufferedInputStream(httpClient.inputStream)
                     val data: String = readStream(inputStream = stream)
+                    Log.v("my_tag", "data received is: " + data)
                     return data
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -109,8 +111,8 @@ class MainActivity : AppCompatActivity() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
 
-            Log.v("my_tag", "data received is: " + result)
-//            innerTextView?.text = JSONObject(result).toString()
+
+            noNewsTextView?.text = JSONObject(result).toString()
 
             /**
              * ... Work with the weather data
