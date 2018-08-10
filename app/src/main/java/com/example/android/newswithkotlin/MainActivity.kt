@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.BufferedReader
@@ -77,11 +78,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class GetNewsTask(textView: TextView) : AsyncTask<Unit, Unit, String>() {
+    class GetNewsTask(textView: TextView) : AsyncTask<Unit, Unit, ArrayList<News>?>() {
 
         val noNewsTextView: TextView? = textView
 
-        override fun doInBackground(vararg params: Unit?): String? {
+        override fun doInBackground(vararg params: Unit?): ArrayList<News>? {
             val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
             val httpClient = url.openConnection() as HttpURLConnection
             if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
@@ -89,7 +90,12 @@ class MainActivity : AppCompatActivity() {
                     val stream = BufferedInputStream(httpClient.inputStream)
                     val data: String = readStream(inputStream = stream)
                     Log.v("my_tag", "data received is: " + data)
-                    return data
+
+                    var news = ArrayList<News>()
+                    val jsonUtils = JsonUtils()
+                    news = jsonUtils.extractFeatureFromJson(data)
+
+                    return news
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
@@ -108,14 +114,17 @@ class MainActivity : AppCompatActivity() {
             return stringBuilder.toString()
         }
 
-        override fun onPostExecute(result: String?) {
+        override fun onPostExecute(result: ArrayList<News>?) {
             super.onPostExecute(result)
 
-
-            noNewsTextView?.text = JSONObject(result).toString()
+            if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
 
             /**
-             * ... Work with the weather data
+             * ... Work with the data:
+             * https://engineering.kitchenstories.io/data-classes-and-parsing-json-a-story-about-converting-models-to-kotlin-caf8a599df9e
+             * https://github.com/square/moshi - a modern JSON library for Android and Java.
+             * It makes it easy to parse JSON into Java objects (example in article above).
+             * https://github.com/cbeust/klaxon -  library to parse json in Kotlin
              */
 
         }
