@@ -6,14 +6,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -89,11 +86,11 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val stream = BufferedInputStream(httpClient.inputStream)
                     val data: String = readStream(inputStream = stream)
-                    Log.v("my_tag", "data received is: " + data)
+                    //Log.v("my_tag", "data received is: " + data)
 
-                    var news = ArrayList<News>()
+
                     val jsonUtils = JsonUtils()
-                    news = jsonUtils.extractFeatureFromJson(data)
+                    var news = jsonUtils.extractFeatureFromJson(data)
 
                     return news
                 } catch (e: Exception) {
@@ -117,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         override fun onPostExecute(result: ArrayList<News>?) {
             super.onPostExecute(result)
 
-            if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
+            // if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
 
             /**
              * ... Work with the data:
