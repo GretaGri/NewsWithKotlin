@@ -1,14 +1,26 @@
 package com.example.android.newswithkotlin
 
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.BufferedInputStream
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
+
+    //recyclerView
+    lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +35,24 @@ class MainActivity : AppCompatActivity() {
 
         //TODO: Add content to recyclerView.(kt files needed: POJO - News, RecyclerViewAdapter,
         // TODO: AsyncTaskLoader, QueryUtils (future dev: SettingsActivity, SearchActivity))
+
+        //Add a recyclerView with dummy data
+        //setupRecyclerView()
+
+        //create asyncTask
+        GetNewsTask(this.no_news_found_text_view).execute()
+    }
+
+    private fun setupRecyclerView() {
+        val myList: ArrayList<String> = ArrayList()
+        for (i in 1..10)
+            myList.add("news $i")
+        recyclerView = findViewById(R.id.recycler_view)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = DummyListAdapter(myList, this)
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -44,4 +74,57 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    class GetNewsTask(textView: TextView) : AsyncTask<Unit, Unit, ArrayList<GsonNews>?>() {
+
+        val noNewsTextView: TextView? = textView
+
+        override fun doInBackground(vararg params: Unit?): ArrayList<GsonNews>? {
+            val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
+            val httpClient = url.openConnection() as HttpURLConnection
+            if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
+                try {
+                    val stream = BufferedInputStream(httpClient.inputStream)
+                    val data: String = readStream(inputStream = stream)
+                    //Log.v("my_tag", "data received is: " + data)
+
+
+                    val jsonUtils = JsonUtils()
+                    var news = jsonUtils.extractFeatureFromJson(data)
+
+                    return news
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    httpClient.disconnect()
+                }
+            } else {
+                println("ERROR ${httpClient.responseCode}")
+            }
+            return null
+        }
+
+        fun readStream(inputStream: BufferedInputStream): String {
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+            val stringBuilder = StringBuilder()
+            bufferedReader.forEachLine { stringBuilder.append(it) }
+            return stringBuilder.toString()
+        }
+
+        override fun onPostExecute(result: ArrayList<GsonNews>?) {
+            super.onPostExecute(result)
+
+            // if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
+
+            /**
+             * ... Work with the data:
+             * https://engineering.kitchenstories.io/data-classes-and-parsing-json-a-story-about-converting-models-to-kotlin-caf8a599df9e
+             * https://github.com/square/moshi - a modern JSON library for Android and Java.
+             * It makes it easy to parse JSON into Java objects (example in article above).
+             * https://github.com/cbeust/klaxon -  library to parse json in Kotlin
+             */
+
+        }
+    }
+
 }
