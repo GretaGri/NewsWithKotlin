@@ -1,9 +1,8 @@
 package com.example.android.newswithkotlin
 
 import android.util.Log
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
-import java.io.StringReader
+import com.google.gson.Gson
+
 
 /**
  * Created by Greta Grigutė on 2018-08-09.
@@ -18,27 +17,19 @@ class JsonUtils {
     private fun JsonUtils() {}
 
 
-    //parse data using Klaxon
-    fun extractFeatureFromJson(jsonResponse: String?): ArrayList<News> {
+        fun extractFeatureFromJson(jsonResponse: String?): ArrayList<GsonNews> {
 
-        var arrayListOfNews = ArrayList<News>()
-        JsonReader(StringReader(jsonResponse)).use { reader ->
-            reader.beginObject() {
+            var arrayListOfNews = ArrayList<GsonNews>()
 
-                while (reader.hasNext()) {
 
-                    /***** Issue at the line below */
-                    val newsItem = Klaxon()
-                            .parse<News>(reader)
-                    Log.v("my_tag", "title is: " + newsItem?.title)
-                    arrayListOfNews.add(newsItem!!)
-                }
+            val gson = Gson()
+            val userJson = gson.fromJson(jsonResponse, GsonNewsResults::class.java);
+            Log.v("my_tag", "results is: " + userJson.newsItem.toString())
 
-            }
+            return arrayListOfNews
+
         }
-        return arrayListOfNews
 
-    }
 
 
 //    /**
