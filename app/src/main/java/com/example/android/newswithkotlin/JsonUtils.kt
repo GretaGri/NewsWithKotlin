@@ -3,9 +3,6 @@ package com.example.android.newswithkotlin
 import com.google.gson.Gson
 
 
-
-
-
 /**
  * Created by Greta Grigutė on 2018-08-09.
  */
@@ -18,23 +15,21 @@ class JsonUtils {
      */
     private fun JsonUtils() {}
 
+    companion object {
+        fun extractFeatureFromJson(jsonResponse: String?): ArrayList<GsonNews> {
 
-    //parse data using Klaxon
-    fun extractFeatureFromJson(jsonResponse: String?): ArrayList<News> {
-
-        var arrayListOfNews = ArrayList<News>()
-
-
-        val gson = Gson()
-        val userJson = gson.toJson(jsonResponse);
+            var arrayListOfNews = ArrayList<GsonNews>()
 
 
+            val gson = Gson()
+            val userJson: GsonNews = gson.fromJson(gson.toJson(jsonResponse), GsonNews);
 
 
+            return arrayListOfNews
 
-        return arrayListOfNews
-
+        }
     }
+
 
 
 //    /**
