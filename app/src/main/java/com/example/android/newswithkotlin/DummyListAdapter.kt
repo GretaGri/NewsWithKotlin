@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.recycler_test_list_item.view.*
 
-class DummyListAdapter(val items: ArrayList<String>, val context: Context) : RecyclerView.Adapter<DummyListAdapter.MyListViewHolder>() {
+class DummyListAdapter(val items: ArrayList<News>, val context: Context) : RecyclerView.Adapter<DummyListAdapter.MyListViewHolder>() {
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
         holder.bindList(items[position])
     }
@@ -25,9 +25,13 @@ class DummyListAdapter(val items: ArrayList<String>, val context: Context) : Rec
 
     open class MyListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // Holds the TextView that will add each item to recyclerView
-        val dummyTextView = view.dummy_text_view_id
-        fun bindList(item: String) {
-            dummyTextView?.text = item
+        val dummyTextViewTitle = view.dummy_text_view_title
+        val dummyTextViewAuthor = view.dummy_text_view_author
+        val dummyTextViewWebUrl = view.dummy_text_view_web_url
+        fun bindList(item: News) {
+            dummyTextViewTitle?.text = item.title
+            dummyTextViewAuthor?.text = item.author
+            dummyTextViewWebUrl?.text = item.webUrl
         }
     }
 }

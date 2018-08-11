@@ -1,6 +1,7 @@
 package com.example.android.newswithkotlin
 
 
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -38,24 +39,12 @@ class MainActivity : AppCompatActivity() {
 
         //Add a recyclerView with dummy data
         //setupRecyclerView()
-
-        //create asyncTask
-        GetNewsTask(this.no_news_found_text_view).execute()
-    }
-
-    private fun setupRecyclerView() {
-        val myList: ArrayList<String> = ArrayList()
-        for (i in 1..10)
-            myList.add("news $i")
         recyclerView = findViewById(R.id.recycler_view)
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = DummyListAdapter(myList, this)
-
-
+        //create asyncTask
+        GetNewsTask(this, this.recyclerView, this.no_news_found_text_view).execute()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+      override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
@@ -75,9 +64,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class GetNewsTask(textView: TextView) : AsyncTask<Unit, Unit, ArrayList<News>?>() {
+    class GetNewsTask(context: Context,recyclerView: RecyclerView, textView: TextView) : AsyncTask<Unit, Unit, ArrayList<News>?>() {
 
         val noNewsTextView: TextView? = textView
+        val context:Context = context
+        val recyclerView:RecyclerView = recyclerView
 
         override fun doInBackground(vararg params: Unit?): ArrayList<News>? {
             val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
@@ -113,8 +104,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: ArrayList<News>?) {
             super.onPostExecute(result)
-
-            if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
+            if(result!=null) setupRecyclerView(context, result)
+            //if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
 
             /**
              * ... Work with the data:
@@ -124,6 +115,13 @@ class MainActivity : AppCompatActivity() {
              * https://github.com/cbeust/klaxon -  library to parse json in Kotlin
              */
 
+        }
+        fun setupRecyclerView(context:Context, myList:ArrayList<News>) {
+            //val myList: ArrayList<String> = ArrayList()
+            // for (i in 1..10)
+            //     myList.add("news $i")
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.adapter = DummyListAdapter(myList, context)
         }
     }
 
