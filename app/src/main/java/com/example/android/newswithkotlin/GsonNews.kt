@@ -7,7 +7,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class GsonNews(
         @SerializedName("results")
-        val newsItem: ArrayList<NewsContent> = ArrayList()) : Parcelable
+        val newsItem: ArrayList<NewsContent> = ArrayList()) : Parcelable {
+}
 
 @Parcelize
 data class NewsContent(
@@ -16,7 +17,7 @@ data class NewsContent(
         @SerializedName("webUrl")
         val webUrl: String = "webUrl",
         @SerializedName("tags")
-        val tags: ContributerContent) : Parcelable
+        val tags: ContributerContent = ContributerContent()) : Parcelable
 
 @Parcelize
 data class ContributerContent(

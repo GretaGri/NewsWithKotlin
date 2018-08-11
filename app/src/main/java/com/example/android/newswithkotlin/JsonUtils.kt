@@ -1,5 +1,6 @@
 package com.example.android.newswithkotlin
 
+import android.util.Log
 import com.google.gson.Gson
 
 
@@ -15,20 +16,19 @@ class JsonUtils {
      */
     private fun JsonUtils() {}
 
-    companion object {
+
         fun extractFeatureFromJson(jsonResponse: String?): ArrayList<GsonNews> {
 
             var arrayListOfNews = ArrayList<GsonNews>()
 
 
             val gson = Gson()
-            val userJson: GsonNews = gson.fromJson(gson.toJson(jsonResponse), GsonNews);
-
+            val userJson: GsonNews = gson.fromJson(jsonResponse, GsonNews::class.java);
+            Log.v("my_tag", "results is: " + userJson.newsItem.toString())
 
             return arrayListOfNews
 
         }
-    }
 
 
 
