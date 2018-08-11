@@ -17,14 +17,23 @@ class JsonUtils {
     private fun JsonUtils() {}
 
 
-        fun extractFeatureFromJson(jsonResponse: String?): ArrayList<GsonNews> {
-
-            var arrayListOfNews = ArrayList<GsonNews>()
+        fun extractFeatureFromJson(jsonResponse: String?): ArrayList<News> {
 
             val gson = Gson()
             val userJson = gson.fromJson(jsonResponse, GsonNews::class.java);
             Log.v("my_tag", "results is: " + userJson.response.newsItem.toString())
+            var arrayListOfNews = ArrayList <News> ()
+            var arrayList: ArrayList<NewsContent> = userJson.response.newsItem
+            for (jsonIndex in 0..(arrayList.size - 1)) {
 
+                var authors = ""
+
+                for (i in 0..(arrayList[jsonIndex].tags.size - 1)) {
+                    authors = authors + arrayList[jsonIndex].tags[i].title
+                }
+
+               arrayListOfNews.add(News(arrayList[jsonIndex].title,authors,arrayList[jsonIndex].webUrl))
+            }
 
             return arrayListOfNews
         }

@@ -75,11 +75,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class GetNewsTask(textView: TextView) : AsyncTask<Unit, Unit, ArrayList<GsonNews>?>() {
+    class GetNewsTask(textView: TextView) : AsyncTask<Unit, Unit, ArrayList<News>?>() {
 
         val noNewsTextView: TextView? = textView
 
-        override fun doInBackground(vararg params: Unit?): ArrayList<GsonNews>? {
+        override fun doInBackground(vararg params: Unit?): ArrayList<News>? {
             val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
             val httpClient = url.openConnection() as HttpURLConnection
             if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
@@ -111,10 +111,10 @@ class MainActivity : AppCompatActivity() {
             return stringBuilder.toString()
         }
 
-        override fun onPostExecute(result: ArrayList<GsonNews>?) {
+        override fun onPostExecute(result: ArrayList<News>?) {
             super.onPostExecute(result)
 
-            // if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
+            if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
 
             /**
              * ... Work with the data:
