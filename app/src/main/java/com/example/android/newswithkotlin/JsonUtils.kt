@@ -23,7 +23,7 @@ class JsonUtils {
 
 
             val gson = Gson()
-            val userJson: GsonNews = gson.fromJson(jsonResponse, GsonNews::class.java);
+            val userJson = gson.fromJson(jsonResponse, GsonNewsResults::class.java);
             Log.v("my_tag", "results is: " + userJson.newsItem.toString())
 
             return arrayListOfNews
