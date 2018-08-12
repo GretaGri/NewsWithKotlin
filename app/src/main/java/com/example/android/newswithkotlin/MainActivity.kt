@@ -17,6 +17,10 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import okhttp3.OkHttpClient
+import android.os.AsyncTask.execute
+import okhttp3.Request
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -69,30 +73,48 @@ class MainActivity : AppCompatActivity() {
         val noNewsTextView: TextView? = textView
         val context:Context = context
         val recyclerView:RecyclerView = recyclerView
+        //To use OkHttp also do not forget to add dependency and internet permission:)
+        var client = OkHttpClient()
 
         override fun doInBackground(vararg params: Unit?): ArrayList<NewsContent>? {
-            val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
-            val httpClient = url.openConnection() as HttpURLConnection
-            if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
-                try {
-                    val stream = BufferedInputStream(httpClient.inputStream)
-                    val data: String = readStream(inputStream = stream)
+            val stringUrl = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
+
+            val builder = Request.Builder()
+            builder.url(stringUrl)
+            val request = builder.build()
+
+            try {
+                val response = client.newCall(request).execute()
+                val jsonUtils = JsonUtils()
+                var news: ArrayList<NewsContent>? = null
+                if (response!= null){news = jsonUtils.extractFeatureFromJson(response.body()!!.string())}
+                return news
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            return null
+
+           // val httpClient = url.openConnection() as HttpURLConnection
+           // if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
+             //   try {
+              //      val stream = BufferedInputStream(httpClient.inputStream)
+                //    val data: String = readStream(inputStream = stream)
                     //Log.v("my_tag", "data received is: " + data)
 
+               //     val jsonUtils = JsonUtils()
+              //      var news = jsonUtils.extractFeatureFromJson(data)
 
-                    val jsonUtils = JsonUtils()
-                    var news = jsonUtils.extractFeatureFromJson(data)
-
-                    return news
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    httpClient.disconnect()
-                }
-            } else {
-                println("ERROR ${httpClient.responseCode}")
-            }
-            return null
+                //    return news
+            //    } catch (e: Exception) {
+             //       e.printStackTrace()
+            //    } finally {
+             //       httpClient.disconnect()
+              //  }
+          //  } else {
+           //     println("ERROR ${httpClient.responseCode}")
+         //   }
+         //   return null
         }
 
         fun readStream(inputStream: BufferedInputStream): String {
