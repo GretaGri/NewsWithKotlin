@@ -34,6 +34,7 @@ class DummyListAdapter(val items: ArrayList<NewsContent>, val context: Context) 
             //need to handle author's part as it's not getting initialized properly
             if (item.tags.size > 0)
                 dummyTextViewAuthor?.text = item.tags[0].title
+          
             dummyTextViewWebUrl?.text = item.webUrl
         }
     }
