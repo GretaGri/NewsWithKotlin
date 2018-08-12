@@ -4,18 +4,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-//to parse the "response" field, we can also use the suggestion from: https://stackoverflow.com/q/32490011/5770629
-//Which would make the code look like:
-//JsonElement userJson = new JsonParser().parse("response");
-@Parcelize
-data class GsonNews(
-        @SerializedName("response")
-        val response: GsonNewsResults) : Parcelable
+//reduced no of model classes to handle the Json Parsing using the method JsonParser().parse)
 
-@Parcelize
-data class GsonNewsResults(
-        @SerializedName("results")
-        val newsItem: ArrayList<NewsContent> = ArrayList()) : Parcelable
 
 //main news content
 @Parcelize

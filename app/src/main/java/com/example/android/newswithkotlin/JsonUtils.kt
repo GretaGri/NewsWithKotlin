@@ -1,7 +1,7 @@
 package com.example.android.newswithkotlin
 
-import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 
 
 /**
@@ -16,13 +16,18 @@ class JsonUtils {
      */
     private fun JsonUtils() {}
 
-
     fun extractFeatureFromJson(jsonResponse: String?): ArrayList<NewsContent> {
 
-            val gson = Gson()
-            val userJson = gson.fromJson(jsonResponse, GsonNews::class.java);
-            Log.v("my_tag", "results is: " + userJson.response.newsItem.toString())
-            var arrayList: ArrayList<NewsContent> = userJson.response.newsItem
+        //another way of doing json parsing by reducing no of model classes
+        val newsJsonArray = JsonParser().parse(jsonResponse).asJsonObject
+                .getAsJsonObject("response").asJsonObject
+                .getAsJsonArray("results").asJsonArray
+
+        val arrayList: ArrayList<NewsContent> = ArrayList()
+        for (news in newsJsonArray) {
+            arrayList.add(Gson().fromJson<NewsContent>(news, NewsContent::class.java))
+        }
+
         return arrayList
     }
 }
