@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.recycler_test_list_item.view.*
 
-class DummyListAdapter(val items: ArrayList<News>, val context: Context) : RecyclerView.Adapter<DummyListAdapter.MyListViewHolder>() {
+class DummyListAdapter(val items: ArrayList<NewsContent>, val context: Context) : RecyclerView.Adapter<DummyListAdapter.MyListViewHolder>() {
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
         holder.bindList(items[position])
     }
@@ -28,9 +28,11 @@ class DummyListAdapter(val items: ArrayList<News>, val context: Context) : Recyc
         val dummyTextViewTitle = view.dummy_text_view_title
         val dummyTextViewAuthor = view.dummy_text_view_author
         val dummyTextViewWebUrl = view.dummy_text_view_web_url
-        fun bindList(item: News) {
+        fun bindList(item: NewsContent) {
             dummyTextViewTitle?.text = item.title
-            dummyTextViewAuthor?.text = item.author
+
+            //need to handle author's part as it's not getting initialized properly
+            //dummyTextViewAuthor?.text = item.tags[0].title
             dummyTextViewWebUrl?.text = item.webUrl
         }
     }

@@ -17,6 +17,7 @@ data class GsonNewsResults(
         @SerializedName("results")
         val newsItem: ArrayList<NewsContent> = ArrayList()) : Parcelable
 
+//main news content
 @Parcelize
 data class NewsContent(
         @SerializedName("webTitle")
@@ -26,6 +27,7 @@ data class NewsContent(
         @SerializedName("tags")
         val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable
 
+//author details
 @Parcelize
 data class ContributerContent(
         @SerializedName("webTitle")

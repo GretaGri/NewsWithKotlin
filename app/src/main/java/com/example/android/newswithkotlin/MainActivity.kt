@@ -64,13 +64,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class GetNewsTask(context: Context,recyclerView: RecyclerView, textView: TextView) : AsyncTask<Unit, Unit, ArrayList<News>?>() {
+    class GetNewsTask(context: Context, recyclerView: RecyclerView, textView: TextView) : AsyncTask<Unit, Unit, ArrayList<NewsContent>?>() {
 
         val noNewsTextView: TextView? = textView
         val context:Context = context
         val recyclerView:RecyclerView = recyclerView
 
-        override fun doInBackground(vararg params: Unit?): ArrayList<News>? {
+        override fun doInBackground(vararg params: Unit?): ArrayList<NewsContent>? {
             val url = URL("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
             val httpClient = url.openConnection() as HttpURLConnection
             if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             return stringBuilder.toString()
         }
 
-        override fun onPostExecute(result: ArrayList<News>?) {
+        override fun onPostExecute(result: ArrayList<NewsContent>?) {
             super.onPostExecute(result)
             if(result!=null) setupRecyclerView(context, result)
             //if(result!=null) noNewsTextView?.text = result[0].title + result[0].author + result[0].webUrl
@@ -116,7 +116,8 @@ class MainActivity : AppCompatActivity() {
              */
 
         }
-        fun setupRecyclerView(context:Context, myList:ArrayList<News>) {
+
+        fun setupRecyclerView(context: Context, myList: ArrayList<NewsContent>) {
             //val myList: ArrayList<String> = ArrayList()
             // for (i in 1..10)
             //     myList.add("news $i")
