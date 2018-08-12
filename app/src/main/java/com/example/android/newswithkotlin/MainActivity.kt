@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         fetchDataUsingOkHttp()
     }
 
-    private fun fetchDataUsingOkHttp() {
+    private fun fetchDataUsingOkHttp(){
 
         val client = OkHttpClient.Builder()
                 .build()
@@ -48,12 +48,15 @@ class MainActivity : AppCompatActivity() {
                 .url(HttpUrl.parse("http://content.guardianapis.com/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor"))
                 .build()
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {}
+            override fun onFailure(call: Call, e: IOException) {call.cancel()}
             override fun onResponse(call: Call, response: Response) {
-                Log.v("my_tag", "data received in OkHttp is: " + response.body()?.string())
-                setupRecyclerView(applicationContext, JsonUtils.extractFeatureFromJson(response.body()?.string()))
+               // Log.v("my_tag", "data received in OkHttp is: " + response.body()?.string())
+                val myResponse = response.body()?.string()
+                this@MainActivity.runOnUiThread {val jsonUtils = JsonUtils()
+                setupRecyclerView(applicationContext, jsonUtils.extractFeatureFromJson(myResponse))}
             }
         })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
