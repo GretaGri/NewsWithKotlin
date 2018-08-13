@@ -23,6 +23,13 @@ class MainActivity : AppCompatActivity() {
 
         //TODO: Add content to recyclerView.(kt files needed: POJO - News, RecyclerViewAdapter,
         // TODO: AsyncTaskLoader, QueryUtils (future dev: SettingsActivity, SearchActivity))
+
+        //Make a method call to fetch data from the Guardian api using Retrofit and Gson and to setup RecyclerView alongwith
+        fetchDataFromGuardianUsingRetrofit()
+    }
+
+    private fun fetchDataFromGuardianUsingRetrofit() {
+        TODO("not implemented") //Make the api call here and also setup the recyclerView after parsing data using Gson
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
