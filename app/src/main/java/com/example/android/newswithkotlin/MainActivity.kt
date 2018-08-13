@@ -3,10 +3,15 @@ package com.example.android.newswithkotlin
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +34,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchDataFromGuardianUsingRetrofit() {
-        TODO("not implemented") //Make the api call here and also setup the recyclerView after parsing data using Gson
+        val apiInterface = APIClient.client.create(APIInterface::class.java)
+
+
+        /**
+        GET List of news
+         **/
+        val call = apiInterface.getNewsList("results")
+
+
+        call.enqueue(object : Callback<ArrayList<News>?> {
+            override fun onResponse(call: Call<ArrayList<News>?>?, response: Response<ArrayList<News>?>?) {
+                val resource = response?.body()
+                Log.v("my_tag", "data is: " + resource)
+            }
+
+            override fun onFailure(call: Call<ArrayList<News>?>?, t: Throwable?) {
+
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -43,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings ->  {
+            R.id.action_settings -> {
                 Toast.makeText(this, "Sorry, this feature is not available",
                         Toast.LENGTH_SHORT).show();
                 true
