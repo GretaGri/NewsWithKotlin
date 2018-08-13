@@ -19,7 +19,7 @@ internal object APIClient {
 
 
             retrofit = Retrofit.Builder()
-                    .baseUrl("https://reqres.in")
+                    .baseUrl("http://content.guardianapis.com")
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build()

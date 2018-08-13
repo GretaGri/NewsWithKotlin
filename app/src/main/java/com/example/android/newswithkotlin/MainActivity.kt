@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ArrayList<News>?>?, t: Throwable?) {
-
+                Log.v("my_tag", "fail message is: " + t?.message)
             }
         })
     }
