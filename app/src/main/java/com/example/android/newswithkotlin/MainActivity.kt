@@ -43,13 +43,13 @@ class MainActivity : AppCompatActivity() {
         val call = apiInterface.getNewsList("results")
 
 
-        call.enqueue(object : Callback<ArrayList<News>?> {
-            override fun onResponse(call: Call<ArrayList<News>?>?, response: Response<ArrayList<News>?>?) {
-                val resource = response?.body()
+        call.enqueue(object : Callback<News> {
+            override fun onResponse(call: Call<News>, response: Response<News>?) {
+                val resource = response?.body().toString()
                 Log.v("my_tag", "data is: " + resource)
             }
 
-            override fun onFailure(call: Call<ArrayList<News>?>?, t: Throwable?) {
+            override fun onFailure(call: Call<News>, t: Throwable?) {
                 Log.v("my_tag", "fail message is: " + t?.message)
             }
         })

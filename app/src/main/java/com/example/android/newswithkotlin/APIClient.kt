@@ -12,11 +12,9 @@ internal object APIClient {
 
     val client: Retrofit
         get() {
-
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
             val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
 
             retrofit = Retrofit.Builder()
                     .baseUrl("http://content.guardianapis.com")
@@ -24,9 +22,6 @@ internal object APIClient {
                     .client(client)
                     .build()
 
-
-
             return retrofit!!
         }
-
 }
