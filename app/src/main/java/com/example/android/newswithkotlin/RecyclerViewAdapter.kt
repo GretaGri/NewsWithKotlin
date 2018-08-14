@@ -17,7 +17,6 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
         return MyListViewHolder(LayoutInflater.from(context).inflate(R.layout.news_list_item, parent, false))
     }
 
-
     // Gets the number of items in the list
     override fun getItemCount(): Int {
         return items.size

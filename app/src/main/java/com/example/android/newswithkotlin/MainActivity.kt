@@ -1,8 +1,10 @@
 package com.example.android.newswithkotlin
 
-
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +16,9 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
+
+    //recyclerView
+    lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         // TODO: AsyncTaskLoader, QueryUtils (future dev: SettingsActivity, SearchActivity))
 
         //Make a method call to fetch data from the Guardian api using Retrofit and Gson and to setup RecyclerView alongwith
+        recyclerView = findViewById(R.id.recycler_view)
         fetchDataFromGuardianUsingRetrofit()
     }
 
@@ -43,17 +49,26 @@ class MainActivity : AppCompatActivity() {
         val call = apiInterface.getNewsList("results")
 
 
-        call.enqueue(object : Callback<News> {
-            override fun onResponse(call: Call<News>, response: Response<News>?) {
-                val resource = response?.body().toString()
-                Log.v("my_tag", "data is: " + resource)
+        call.enqueue(object : Callback<GsonNewsResponse> {
+            override fun onResponse(call: Call<GsonNewsResponse>, response: Response<GsonNewsResponse>?) {
+                val resource = response?.body()
+                this@MainActivity.runOnUiThread {
+                    setupRecyclerView(applicationContext, resource?.response?.newsItem!!)
+
+                }
             }
 
-            override fun onFailure(call: Call<News>, t: Throwable?) {
+            override fun onFailure(call: Call<GsonNewsResponse>, t: Throwable?) {
                 Log.v("my_tag", "fail message is: " + t?.message)
             }
         })
     }
+
+    fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = RecyclerViewAdapter(listOfNews, context)
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.

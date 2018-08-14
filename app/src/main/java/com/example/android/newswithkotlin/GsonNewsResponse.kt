@@ -4,6 +4,21 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
+
+//we can reduce no of model classes to handle the Json Parsing using the method JsonParser().parse)
+//as in this example: https://stackoverflow.com/q/32490011/5770629
+//so finally we'll not need the model classes GsonNews and GsonNewsResults
+
+@Parcelize
+data class GsonNewsResponse(
+        @SerializedName("response")
+        val response: GsonNewsResults) : Parcelable
+
+@Parcelize
+data class GsonNewsResults(
+        @SerializedName("results")
+        val newsItem: ArrayList<News> = ArrayList()) : Parcelable
+
 //main news content
 @Parcelize
 data class News(
