@@ -17,7 +17,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    //recyclerView
+    // declare recyclerView instance with lateinit so that it can be handled without any NPE
     lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
