@@ -38,28 +38,23 @@ class MainActivity : AppCompatActivity() {
         // TODO("not implemented") //Make the api call here and also setup the recyclerView after parsing data using Gson
         val apiInterface = ApiClient.client.create<ApiInterface>(ApiInterface::class.java)
         //how to call interface
-        val call: Call<NewsContent> = apiInterface.searchArticle()
+        val call: Call<NewsResponse> = apiInterface.searchArticle("results")
         Log.d("my_log", "call is: " + call.toString())
-                call.enqueue(object : Callback<NewsContent> {
-                    override fun onResponse(call: Call<NewsContent>, response: Response<NewsContent>) {
-
+                call.enqueue(object : Callback<NewsResponse> {
+                    override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
 
                         Log.d("TAG", response.code().toString() + "")
 
-                        var displayResponse = ""
 
                         val resource = response.body()
-                        val title = resource!!.title
-                        val webUrl = resource!!.webUrl
-                        val tags = resource!!.tags
+                        val newsArray = resource!!.response.newsItem
 
-                        displayResponse += "Title \n"  + title + " Web Url\n" + webUrl + " Tags\n" + tags.toString()
 
-                        Log.d("TAG", "Response is: " + displayResponse)
+                        Log.d("TAG", "Array list is: " + newsArray.toString())
 
                     }
 
-                    override fun onFailure(call: Call<NewsContent>, t: Throwable) {
+                    override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                         call.cancel()
                     }
                 })
