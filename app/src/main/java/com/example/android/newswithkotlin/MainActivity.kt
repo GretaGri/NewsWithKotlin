@@ -3,10 +3,16 @@ package com.example.android.newswithkotlin
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +35,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchDataFromGuardianUsingRetrofit() {
-        TODO("not implemented") //Make the api call here and also setup the recyclerView after parsing data using Gson
+        // TODO("not implemented") //Make the api call here and also setup the recyclerView after parsing data using Gson
+        val apiInterface = ApiClient.client.create<ApiInterface>(ApiInterface::class.java)
+        //how to call interface
+        val call: Call<NewsContent> = apiInterface.searchArticle()
+        Log.d("my_log", "call is: " + call.toString())
+                call.enqueue(object : Callback<NewsContent> {
+                    override fun onResponse(call: Call<NewsContent>, response: Response<NewsContent>) {
+
+
+                        Log.d("TAG", response.code().toString() + "")
+
+                        var displayResponse = ""
+
+                        val resource = response.body()
+                        val title = resource!!.title
+                        val webUrl = resource!!.webUrl
+                        val tags = resource!!.tags
+
+                        displayResponse += "Title \n"  + title + " Web Url\n" + webUrl + " Tags\n" + tags.toString()
+
+                        Log.d("TAG", "Response is: " + displayResponse)
+
+                    }
+
+                    override fun onFailure(call: Call<NewsContent>, t: Throwable) {
+                        call.cancel()
+                    }
+                })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -41,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in AndroidManifest.ml.
         return when (item.itemId) {
             R.id.action_settings ->  {
                 Toast.makeText(this, "Sorry, this feature is not available",
