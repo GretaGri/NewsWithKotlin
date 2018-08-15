@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         // TODO("not implemented") //Make the api call here and also setup the recyclerView after parsing data using Gson
         val apiInterface = ApiClient.client.create<ApiInterface>(ApiInterface::class.java)
         //how to call interface
-        val call: Call<NewsResponse> = apiInterface.searchArticle("results")
+        val call: Call<NewsResponse> = apiInterface.searchArticle("sport")
         Log.d("my_log", "call is: " + call.toString())
                 call.enqueue(object : Callback<NewsResponse> {
                     override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {

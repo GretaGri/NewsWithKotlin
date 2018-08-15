@@ -9,8 +9,8 @@ import retrofit2.http.Query
  */
 interface ApiInterface {
 
-    @GET("/search?q=sport&order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
-    fun searchArticle(@Query(value = "response") results: String): Call<NewsResponse>
+    @GET("/search?order-by=newest&api-key=0a397f99-4b95-416f-9c51-34c711f0069a&show-tags=contributor")
+    fun searchArticle(@Query("q") searchFor: String): Call<NewsResponse>
     // fun searchArticle(@Query("webTitle") title: String, @Query("webUrl") url: String, @Query("tags") tags: ArrayList<ContributerContent>): Observable<NewsContent>
 
 }
