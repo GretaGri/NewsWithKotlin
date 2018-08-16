@@ -21,32 +21,32 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarr"
-        >
+        app:layout_constraintTop_toBottomOf="@id/appBarr">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/no_news"/>
+            android:src="@drawable/no_news" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:gravity="center"
             android:layout_marginTop="@dimen/margin_top_main"
             android:fontFamily="cursive"
+            android:gravity="center"
             android:text="@string/no_news"
-            android:textSize="@dimen/text_size_main"/>
+            android:textSize="@dimen/text_size_main" />
     </RelativeLayout>
+
+    <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
