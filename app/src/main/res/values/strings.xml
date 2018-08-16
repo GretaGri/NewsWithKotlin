@@ -2,4 +2,8 @@
     <string name="app_name">News With Kotlin</string>
     <string name="action_settings">Settings</string>
     <string name="no_news">No news. \nTry to refresh page later</string>
+    <string name="empty_response_received">No news found. Please try again and make sure to query wit right search parameter!</string>
+    <string name="failed_server_response">Couldn\'t connect to the server. The error found is: %1$s</string>
+    <string name="internet_not_connected">Internet not connected. Please try again with stable internet connection</string>
+    <string name="loading_news">Loading news. Please wait...</string>
 </resources>
