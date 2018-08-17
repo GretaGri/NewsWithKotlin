@@ -1,5 +1,6 @@
 package com.example.android.newswithkotlin
 
+import android.app.DialogFragment
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -31,9 +32,9 @@ class MainActivity : AppCompatActivity() {
 
 
         fab.setOnClickListener { view ->
-            Toast.makeText(this, "Sorry, this feature is not available", Toast.LENGTH_SHORT).show()
-            //Suggestion to use Anko extension to simplify some code - toast is one of the examples: https://github.com/Kotlin/anko
-            // TODO: Open search activity
+            val searchDialogFragment = SearchDialog() as DialogFragment
+            val ft = fragmentManager
+            searchDialogFragment.show(ft, "dialog")
         }
 
         //TODO: Add content to recyclerView.(kt files needed: POJO - News, RecyclerViewAdapter,
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
             emptyView.text = getString(R.string.internet_not_connected)
         }
     }
+
 
     private fun internetIsActive(): Boolean {
         val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

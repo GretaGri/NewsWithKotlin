@@ -1,20 +1,22 @@
 package com.example.android.newswithkotlin
 
+import android.app.DialogFragment
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 
 
-class SearchDialogFragment : DialogFragment() {
+class SearchDialog : DialogFragment() {
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater!!.inflate(R.layout.fragment_search
                 , container, false)
 
         val searchView: SearchView = view.findViewById(R.id.search_view)
-        searchView.setQueryHint("Search View Hint")
+        searchView.setQueryHint(getString(R.string.search_hint))
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
@@ -24,17 +26,11 @@ class SearchDialogFragment : DialogFragment() {
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-
-
-                // Do your task here
-
+                Log.v("my_tag", "text received is: " + query)
                 return false
             }
 
         })
-
-
-
         return view
     }
 }
