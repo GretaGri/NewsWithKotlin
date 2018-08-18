@@ -1,7 +1,7 @@
 package com.example.android.newswithkotlin
 
-import android.app.DialogFragment
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -29,12 +29,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-
+        
         fab.setOnClickListener { view ->
-            val searchDialogFragment = SearchDialog() as DialogFragment
-            val ft = fragmentManager
-            searchDialogFragment.show(ft, "dialog")
+            val searchIntent = Intent(this, SearchDialogActivity::class.java)
+            startActivityForResult(searchIntent, 5)
         }
 
         //TODO: Add content to recyclerView.(kt files needed: POJO - News, RecyclerViewAdapter,
@@ -52,6 +50,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == 5 && data != null) {
+            //users query received. Now create another retrofit call and fetch new data
+            Log.v("my_tag", "new data is: " + data.getStringExtra("usersQuery"))
+        }
+    }
 
     private fun internetIsActive(): Boolean {
         val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
