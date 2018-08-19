@@ -21,10 +21,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarr">
@@ -45,6 +44,13 @@
             android:gravity="center"
             android:text="@string/no_news"
             android:textSize="@dimen/text_size_main" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <include layout="@layout/content_main" />
