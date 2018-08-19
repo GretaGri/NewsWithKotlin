@@ -13,7 +13,7 @@ class SearchDialogFragment : DialogFragment() {
     //callback code referenced from: https://stackoverflow.com/a/14440095/5770629
     //create callback interface
     interface userQueryListener {
-        fun someEvent(s: String)
+        fun someEvent(query: String)
     }
 
     var queryListener: userQueryListener? = null
@@ -40,7 +40,11 @@ class SearchDialogFragment : DialogFragment() {
             override fun onQueryTextSubmit(query: String): Boolean {
                 //callback the interface with the users query so that action can be performed on that
                 queryListener!!.someEvent(query);
-                return false
+
+                //when users query has been received, dismiss the dialog fragment and do the further operation
+                //dismiss dialog fragment
+                dismiss()
+                return true
             }
 
         })
