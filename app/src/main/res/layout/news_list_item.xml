@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/margin_small"
     android:background="@color/colorBackground">
 
@@ -18,7 +19,8 @@
         android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="title" />
 
     <TextView
         android:id="@+id/text_view_author"
@@ -32,7 +34,8 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_title" />
+        app:layout_constraintTop_toBottomOf="@id/text_view_title"
+        tools:text="author" />
 
     <TextView
         android:id="@+id/text_view_web_url"
@@ -46,15 +49,25 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_author" />
+        app:layout_constraintTop_toBottomOf="@id/text_view_author"
+        tools:text="url" />
 
     <ImageButton
-        android:id="@+id/my_favorite"
+        android:id="@+id/fav_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_favorite_border_red_24dp"
-        android:background="@color/colorBackground"
-        android:layout_margin="@dimen/margin_medium"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.929"
+        app:layout_constraintStart_toStartOf="@+id/text_view_author"
+        app:layout_constraintTop_toTopOf="@+id/text_view_title"
+        app:layout_constraintVertical_bias="0.461"
+        app:srcCompat="@drawable/unstarred" />
+
 </android.support.constraint.ConstraintLayout>

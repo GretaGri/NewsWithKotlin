@@ -14,6 +14,8 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.example.android.newswithkotlin.database.GsonNewsResponse
+import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
     lateinit var progressBar: ProgressBar
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

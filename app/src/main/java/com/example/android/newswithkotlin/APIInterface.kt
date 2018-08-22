@@ -1,5 +1,6 @@
 package com.example.android.newswithkotlin
 
+import com.example.android.newswithkotlin.database.GsonNewsResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
