@@ -7,4 +7,5 @@
     <dimen name="margin_small">4dp</dimen>
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="padding_large">16dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
 </resources>
