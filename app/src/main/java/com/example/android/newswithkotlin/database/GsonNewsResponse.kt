@@ -51,10 +51,13 @@ data class News(
 @Entity(tableName = "authorstable",
         foreignKeys = arrayOf(ForeignKey(entity = News::class,
                 parentColumns = arrayOf("id"),
-        childColumns = arrayOf("title"),
+                childColumns = arrayOf("idAuthor"),
         onDelete = ForeignKey.CASCADE)))
 @Parcelize
 data class ContributorContent(
+        @Expose(deserialize = false, serialize = false)
+        @PrimaryKey(autoGenerate = true)
+        var idAuthor: Int = 0,
         @Expose
         @SerializedName("webTitle")
         var title: String = "webTitle",

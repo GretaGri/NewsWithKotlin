@@ -47,12 +47,14 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
         // Member variable for the Database
         private var mDb: AppDatabase? = null
 
+
         // Holds the TextView that will add each item to recyclerView
         val dummyTextViewTitle = view.text_view_title
         val dummyTextViewAuthor = view.text_view_author
         val dummyTextViewWebUrl = view.text_view_web_url
         val favButton: ImageButton = view.fav_image_button
         fun bindList(item: News, context: Context) {
+            mDb = AppDatabase.getInstance(context)
             dummyTextViewTitle?.text = item.title
 
             //need to handle author's part as it's not getting initialized properly
@@ -72,8 +74,6 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
                 mDb?.newsDao()?.insertNews(item)
                 if (authors.size > 0)
                     mDb?.newsDao()?.insertAuthorsForNews(authors.get(0))
-                else
-                    mDb?.newsDao()?.insertAuthorsForNews(ContributorContent("webTitle", "apiUrl"))
             })
         }
     }
