@@ -62,12 +62,14 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.929"
         app:layout_constraintStart_toStartOf="@+id/text_view_author"
         app:layout_constraintTop_toTopOf="@+id/text_view_title"
         app:layout_constraintVertical_bias="0.461"
-        app:srcCompat="@drawable/unstarred" />
+        app:srcCompat="@drawable/unstarred"
+        android:background="@null" />
 
 </android.support.constraint.ConstraintLayout>
