@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import android.util.Log
 
-@Database(entities = arrayOf(News::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(News::class, ContributorContent::class), version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun newsDao(): NewsDao

@@ -48,7 +48,7 @@ class FavoriteActivity : AppCompatActivity() {
         Log.v("my_tag", "size of list is: " + listOfNews.size)
         val arrayList: ArrayList<News> = ArrayList()
         for (item in listOfNews) {
-            arrayList?.add(item)
+            arrayList.add(item)
         }
         recyclerView.adapter = RecyclerViewAdapter(arrayList!!, context)
     }

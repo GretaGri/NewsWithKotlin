@@ -48,16 +48,16 @@ data class News(
     constructor() : this("title", "webUrl", 0, ArrayList())
 }
 
-@Entity(foreignKeys = arrayOf(ForeignKey(entity = News::class,
-        parentColumns = arrayOf("title"),
+@Entity(tableName = "authorstable",
+        foreignKeys = arrayOf(ForeignKey(entity = News::class,
+                parentColumns = arrayOf("id"),
         childColumns = arrayOf("title"),
         onDelete = ForeignKey.CASCADE)))
-
 @Parcelize
 data class ContributorContent(
         @Expose
         @SerializedName("webTitle")
-        val title: String = "webTitle",
+        var title: String = "webTitle",
         @Expose
         @SerializedName("apiUrl")
-        val apiUrl: String = "apiUrl") : Parcelable
+        var apiUrl: String = "apiUrl") : Parcelable

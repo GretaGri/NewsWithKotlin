@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import com.example.android.newswithkotlin.database.AppDatabase
+import com.example.android.newswithkotlin.database.ContributorContent
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
@@ -60,15 +61,19 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
             dummyTextViewWebUrl?.text = item.webUrl
 
             favButton.setOnClickListener { view ->
-                saveNews(item)
+                saveNews(item, item.tags)
             }
         }
 
-        private fun saveNews(item: News) {
+        private fun saveNews(item: News, authors: ArrayList<ContributorContent>) {
             AppExecutors.instance.diskIO.execute(Runnable {
                 //for now only add the news to the database on fav click
                 Log.v("my_tag", "insert called")
                 mDb?.newsDao()?.insertNews(item)
+                if (authors.size > 0)
+                    mDb?.newsDao()?.insertAuthorsForNews(authors.get(0))
+                else
+                    mDb?.newsDao()?.insertAuthorsForNews(ContributorContent("webTitle", "apiUrl"))
             })
         }
     }
