@@ -48,11 +48,16 @@ data class News(
     constructor() : this("title", "webUrl", 0, ArrayList())
 }
 
+/*
+for foreign key implementations,
+refer to: https://www.bignerdranch.com/blog/room-data-storage-for-everyone/
+and https://medium.com/@tonyowen/room-entity-annotations-379150e1ca82
+*/
 @Entity(tableName = "authorstable",
         foreignKeys = arrayOf(ForeignKey(entity = News::class,
                 parentColumns = arrayOf("id"),
                 childColumns = arrayOf("idAuthor"),
-        onDelete = ForeignKey.CASCADE)))
+                onDelete = ForeignKey.CASCADE)))
 @Parcelize
 data class ContributorContent(
         @Expose(deserialize = false, serialize = false)

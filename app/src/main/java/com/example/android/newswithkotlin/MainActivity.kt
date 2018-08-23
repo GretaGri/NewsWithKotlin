@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
     }
 
     private fun setupViewModel() {
-        val viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
         viewModel.newses.observe(this, object : Observer<List<News>> {
             override fun onChanged(newsEntries: List<News>?) {
                 Log.v("my_tag", "onChanged called with size: " + newsEntries?.size)

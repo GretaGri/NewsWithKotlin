@@ -58,8 +58,23 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
             dummyTextViewTitle?.text = item.title
 
             //need to handle author's part as it's not getting initialized properly
-            if (item.tags.size > 0)
+            if (item.tags.size > 0) {
                 dummyTextViewAuthor?.text = item.tags[0].title
+            } else {
+                Log.v("myyyyyy", "else executed")
+                val arrayListOfAuthors: ArrayList<ContributorContent> = ArrayList()
+                AppExecutors.instance.diskIO.execute(Runnable {
+                    // Move the remaining logic inside the run method
+                    for (author in (mDb?.newsDao()?.getAuthorsForNews(item.title)!!)) {
+                        Log.v("myyyyyyyy", "size is: " + (mDb?.newsDao()?.getAuthorsForNews(item.title)!!).size)
+                        arrayListOfAuthors.add(author)
+                    }
+                })
+                item.tags = arrayListOfAuthors
+                if (arrayListOfAuthors.size > 0)
+                    dummyTextViewAuthor?.text = arrayListOfAuthors[0].title
+
+            }
             dummyTextViewWebUrl?.text = item.webUrl
 
             favButton.setOnClickListener { view ->
