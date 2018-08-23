@@ -1,7 +1,6 @@
 package com.example.android.newswithkotlin
 
 import android.content.Context
-import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -71,12 +70,6 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
                 Log.v("my_tag", "insert called")
                 mDb?.newsDao()?.insertNews(item)
             })
-        }
-
-        private fun launchIntent(context: Context) {
-            //start new intent on fav click
-            val favIntent = Intent(context, FavoriteActivity::class.java)
-            context.startActivity(favIntent)
         }
     }
 }

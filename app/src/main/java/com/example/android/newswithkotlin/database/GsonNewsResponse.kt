@@ -1,9 +1,6 @@
 package com.example.android.newswithkotlin.database
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -36,19 +33,25 @@ data class News(
         @Expose
         @SerializedName("webUrl")
         var webUrl: String = "webUrl",
-        /* to exclude this field from being parsed/serialized and desrialized,
-        we can ignore by setting these annotations to false */
+        /*to exclude this field from being parsed/serialized and desrialized,
+        we can ignore by setting these annotations to false
+        */
         @Expose(deserialize = false, serialize = false)
         @ColumnInfo(name = "id")
         @PrimaryKey(autoGenerate = true)
         var id: Int = 0,
+
         @Expose
-        @ColumnInfo(name = "tags")
-        @SerializedName("tags")
         @Ignore
+        @SerializedName("tags")
         var tags: ArrayList<ContributorContent>) : Parcelable {
-    constructor() : this("", "", 0, ArrayList())
+    constructor() : this("title", "webUrl", 0, ArrayList())
 }
+
+@Entity(foreignKeys = arrayOf(ForeignKey(entity = News::class,
+        parentColumns = arrayOf("title"),
+        childColumns = arrayOf("title"),
+        onDelete = ForeignKey.CASCADE)))
 
 @Parcelize
 data class ContributorContent(

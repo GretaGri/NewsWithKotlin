@@ -18,6 +18,6 @@ interface NewsDao {
     @Delete
     fun deleteNews(taskEntry: News)
 
-    @Query("SELECT * FROM newstable WHERE id = :id")
+    @Query("SELECT * FROM newstable WHERE title = :id")
     fun loadNewsById(id: Int): LiveData<News>
 }

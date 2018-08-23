@@ -17,7 +17,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val database = AppDatabase.getInstance(this.getApplication())
         Log.d("my_tag", "Actively retrieving the newses from the DataBase")
         newses = database.newsDao().loadAllNews()
-        Log.v("my_tag", "inside modelView size is: " + newses.toString())
     }
 
     companion object {
