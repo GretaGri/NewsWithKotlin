@@ -1,8 +1,6 @@
 package com.example.android.newswithkotlin.database
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -23,7 +21,7 @@ data class GsonNewsResponse(
 data class GsonNewsResults(
         @Expose
         @SerializedName("results")
-        val newsItem: ArrayList<News> = ArrayList()) : Parcelable
+        val newsItem: ArrayList<News>) : Parcelable
 
 //main news content
 @Entity(tableName = "newstable")
@@ -31,26 +29,43 @@ data class GsonNewsResults(
 data class News(
         @Expose
         @SerializedName("webTitle")
-        val title: String = "webTitle",
+        var title: String = "webTitle",
         @Expose
         @SerializedName("webUrl")
-        val webUrl: String = "webUrl",
-        /* to exclude this field from being parsed/serialized and desrialized,
-        we can ignore by setting these annotations to false */
+        var webUrl: String = "webUrl",
+        /*to exclude this field from being parsed/serialized and desrialized,
+        we can ignore by setting these annotations to false
+        */
         @Expose(deserialize = false, serialize = false)
         @ColumnInfo(name = "id")
         @PrimaryKey(autoGenerate = true)
         var id: Int = 0,
-        @Expose
-        @SerializedName("tags")
-        val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable
 
-//author details
+        @Expose
+        @Ignore
+        @SerializedName("tags")
+        var tags: ArrayList<ContributorContent>) : Parcelable {
+    constructor() : this("title", "webUrl", 0, ArrayList())
+}
+
+/*
+for foreign key implementations,
+refer to: https://www.bignerdranch.com/blog/room-data-storage-for-everyone/
+and https://medium.com/@tonyowen/room-entity-annotations-379150e1ca82
+*/
+@Entity(tableName = "authorstable",
+        foreignKeys = arrayOf(ForeignKey(entity = News::class,
+                parentColumns = arrayOf("id"),
+                childColumns = arrayOf("idAuthor"),
+                onDelete = ForeignKey.CASCADE)))
 @Parcelize
-data class ContributerContent(
+data class ContributorContent(
+        @Expose(deserialize = false, serialize = false)
+        @PrimaryKey(autoGenerate = true)
+        var idAuthor: Int = 0,
         @Expose
         @SerializedName("webTitle")
-        val title: String = "webTitle",
+        var title: String = "webTitle",
         @Expose
         @SerializedName("apiUrl")
-        val apiUrl: String = "apiUrl") : Parcelable
+        var apiUrl: String = "apiUrl") : Parcelable
