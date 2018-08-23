@@ -3,14 +3,18 @@ package com.example.android.newswithkotlin
 import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
-class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : RecyclerView.Adapter<RecyclerViewAdapter.MyListViewHolder>() {
+class RecyclerViewAdapter(val items: ArrayList<News>,
+                          val context: Context) : RecyclerView.Adapter<RecyclerViewAdapter.MyListViewHolder>() {
+
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
         holder.bindList(items[position], context)
     }
@@ -26,6 +30,23 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
     }
 
     open class MyListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        companion object {
+            // Extra for the task ID to be received in the intent
+            val EXTRA_TASK_ID = "extraTaskId"
+            // Extra for the task ID to be received after rotation
+            val INSTANCE_TASK_ID = "instanceTaskId"
+        }
+
+
+        // Constant for default task id to be used when not in update mode
+        val DEFAULT_TASK_ID = -1
+        var mTaskId = DEFAULT_TASK_ID
+
+        // Create AppDatabase member variable for the Database
+        // Member variable for the Database
+        private var mDb: AppDatabase? = null
+
         // Holds the TextView that will add each item to recyclerView
         val dummyTextViewTitle = view.text_view_title
         val dummyTextViewAuthor = view.text_view_author
@@ -38,11 +59,24 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
             if (item.tags.size > 0)
                 dummyTextViewAuthor?.text = item.tags[0].title
             dummyTextViewWebUrl?.text = item.webUrl
-            //start new intent on fav click
-            val favIntent: Intent = Intent(context, FavoriteActivity::class.java)
+
             favButton.setOnClickListener { view ->
-                Intent(favIntent)
+                saveNews(item)
             }
+        }
+
+        private fun saveNews(item: News) {
+            AppExecutors.instance.diskIO.execute(Runnable {
+                //for now only add the news to the database on fav click
+                Log.v("my_tag", "insert called")
+                mDb?.newsDao()?.insertNews(item)
+            })
+        }
+
+        private fun launchIntent(context: Context) {
+            //start new intent on fav click
+            val favIntent = Intent(context, FavoriteActivity::class.java)
+            context.startActivity(favIntent)
         }
     }
 }

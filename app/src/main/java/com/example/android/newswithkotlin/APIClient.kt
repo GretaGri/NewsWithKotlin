@@ -20,7 +20,7 @@ internal object APIClient {
             retrofit = Retrofit.Builder()
                     .baseUrl("http://content.guardianapis.com")
                     /*
-                    explicitly excllude the fields that we need only for database and not for actual news result
+                    explicitly exclude the fields that we need only for database and not for actual news result
                     referenced from the link: @link:https://stackoverflow.com/a/41336692/5770629
                     */
                     .addConverterFactory(GsonConverterFactory.create(GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()))
