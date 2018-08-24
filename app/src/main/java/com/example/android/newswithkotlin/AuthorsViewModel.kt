@@ -6,7 +6,7 @@ import android.util.Log
 import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.ContributorContent
 
-class AuthorsViewModel(application: Application, title: String) : AndroidViewModel(application) {
+class AuthorsViewModel(application: Application, title: Int) : AndroidViewModel(application) {
 
     // Add a newss member variable for a list of News objects wrapped in a LiveData
     val authors: List<ContributorContent>
