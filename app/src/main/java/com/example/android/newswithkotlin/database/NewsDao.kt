@@ -21,8 +21,8 @@ interface NewsDao {
     @Query("SELECT * FROM newstable WHERE title = :id")
     fun loadNewsById(id: Int): LiveData<News>
 
-    @Query("SELECT * FROM authorstable WHERE title IS :title")
-    fun getAuthorsForNews(title: String): List<ContributorContent>
+    @Query("SELECT * FROM authorstable WHERE idContributor IS :idContributor")
+    fun getAuthorsForNews(idContributor: Int): List<ContributorContent>
 
     @Insert
     fun insertAuthorsForNews(author: ContributorContent)

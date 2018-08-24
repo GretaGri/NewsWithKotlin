@@ -1,6 +1,9 @@
 package com.example.android.newswithkotlin.database
 
-import android.arch.persistence.room.*
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.ForeignKey
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -37,7 +40,6 @@ data class News(
         we can ignore by setting these annotations to false
         */
         @Expose(deserialize = false, serialize = false)
-        @ColumnInfo(name = "id")
         @PrimaryKey(autoGenerate = true)
         var id: Int = 0,
 
@@ -56,13 +58,13 @@ and https://medium.com/@tonyowen/room-entity-annotations-379150e1ca82
 @Entity(tableName = "authorstable",
         foreignKeys = arrayOf(ForeignKey(entity = News::class,
                 parentColumns = arrayOf("id"),
-                childColumns = arrayOf("idAuthor"),
+                childColumns = arrayOf("idContributor"),
                 onDelete = ForeignKey.CASCADE)))
 @Parcelize
 data class ContributorContent(
         @Expose(deserialize = false, serialize = false)
         @PrimaryKey(autoGenerate = true)
-        var idAuthor: Int = 0,
+        var idContributor: Int = 0,
         @Expose
         @SerializedName("webTitle")
         var title: String = "webTitle",
