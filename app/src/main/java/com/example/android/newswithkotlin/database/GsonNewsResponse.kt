@@ -2,6 +2,7 @@ package com.example.android.newswithkotlin.database
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -29,21 +30,30 @@ data class GsonNewsResults(
 @Entity(tableName = "newstable")
 @Parcelize
 data class News(
+        @ColumnInfo
         @Expose
         @SerializedName("webTitle")
         val title: String = "webTitle",
+
+        @ColumnInfo
         @Expose
         @SerializedName("webUrl")
         val webUrl: String = "webUrl",
-        /* to exclude this field from being parsed/serialized and desrialized,
+
+        /* to exclude this field from being parsed/serialized and deserialized,
         we can ignore by setting these annotations to false */
         @Expose(deserialize = false, serialize = false)
         @ColumnInfo(name = "id")
         @PrimaryKey(autoGenerate = true)
         var id: Int = 0,
+
+        @ColumnInfo
         @Expose
         @SerializedName("tags")
-        val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable
+        val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable {
+        @Ignore
+        constructor () : this("title", "webUrl",0, ArrayList<ContributerContent>())
+}
 
 //author details
 @Parcelize

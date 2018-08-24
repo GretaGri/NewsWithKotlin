@@ -11,13 +11,13 @@ interface NewsDao {
 
     //a method to get all the news, which returns list of news.
     @Query("SELECT * FROM newstable")
-    fun loadAllNews(): LiveData<List<GsonNewsResponse>>
+    fun loadAllNews(): LiveData<List<News>>
 
     //a method to insert one news item.
     @Insert
     fun insertNews(newsItem: News)
 
-    //
+    //a method to update news
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateNews(newsItem: News)
 
@@ -31,5 +31,5 @@ interface NewsDao {
 
     //a method to select news item with id
     @Query("SELECT * FROM newstable WHERE id = :id")
-    fun loadTaskById(id: Int): LiveData<GsonNewsResponse>
+    fun loadTaskById(id: Int): LiveData<News>
 }
