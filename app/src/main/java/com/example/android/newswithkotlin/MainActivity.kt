@@ -1,8 +1,6 @@
 package com.example.android.newswithkotlin
 
 import android.app.DialogFragment
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -11,7 +9,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,7 +16,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.android.newswithkotlin.database.GsonNewsResponse
 import com.example.android.newswithkotlin.database.News
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.main_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +33,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.main_layout)
         setSupportActionBar(toolbar)
 
         //initialize views
@@ -55,7 +52,6 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         fab.setOnClickListener { view ->
             showDialogFragment()
         }
-        setupViewModel()
     }
 
     private fun showDialogFragment() {
@@ -71,15 +67,6 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         } else {
             emptyView.text = getString(R.string.internet_not_connected)
         }
-    }
-
-    private fun setupViewModel() {
-        val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
-        viewModel.newses.observe(this, object : Observer<List<News>> {
-            override fun onChanged(newsEntries: List<News>?) {
-                Log.v("my_tag", "onChanged called with size: " + newsEntries?.size)
-            }
-        })
     }
 
     private fun internetIsActive(): Boolean {

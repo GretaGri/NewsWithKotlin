@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.View
 import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
@@ -19,7 +20,9 @@ class FavoriteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.main_layout)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.setTitle("Favorite")
         mDb = AppDatabase.getInstance(applicationContext)
 
 
@@ -36,12 +39,12 @@ class FavoriteActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
         viewModel.newses.observe(this, object : Observer<List<News>> {
             override fun onChanged(newsEntries: List<News>?) {
-                setupRecyclerView(this@FavoriteActivity, newsEntries!!, "")
+                setupRecyclerView(this@FavoriteActivity, newsEntries!!)
             }
         })
     }
 
-    fun setupRecyclerView(context: Context, listOfNews: List<News>, usersQuery: String) {
+    fun setupRecyclerView(context: Context, listOfNews: List<News>) {
         recyclerView.visibility = View.VISIBLE
         val arrayListOfNews: ArrayList<News> = ArrayList()
 
