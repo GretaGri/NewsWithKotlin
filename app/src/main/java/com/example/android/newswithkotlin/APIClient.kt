@@ -1,5 +1,6 @@
 package com.example.android.newswithkotlin
 
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,7 +19,11 @@ internal object APIClient {
 
             retrofit = Retrofit.Builder()
                     .baseUrl("http://content.guardianapis.com")
-                    .addConverterFactory(GsonConverterFactory.create())
+                    /*
+                    explicitly exclude the fields that we need only for database and not for actual news result
+                    referenced from the link: @link:https://stackoverflow.com/a/41336692/5770629
+                    */
+                    .addConverterFactory(GsonConverterFactory.create(GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()))
                     .client(client)
                     .build()
 

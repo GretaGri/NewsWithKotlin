@@ -2,6 +2,7 @@ package com.example.android.newswithkotlin
 
 import android.app.DialogFragment
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -13,8 +14,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.android.newswithkotlin.database.GsonNewsResponse
+import com.example.android.newswithkotlin.database.News
+import kotlinx.android.synthetic.main.main_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,9 +30,10 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
     lateinit var queriedForTextView: TextView
     lateinit var progressBar: ProgressBar
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.main_layout)
         setSupportActionBar(toolbar)
 
         //initialize views
@@ -120,11 +123,16 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> {
-                Toast.makeText(this, "Sorry, this feature is not available",
-                        Toast.LENGTH_SHORT).show();
+                launchIntent(this)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun launchIntent(context: Context) {
+        //start new intent on fav click
+        val favIntent = Intent(context, FavoriteActivity::class.java)
+        context.startActivity(favIntent)
     }
 }
