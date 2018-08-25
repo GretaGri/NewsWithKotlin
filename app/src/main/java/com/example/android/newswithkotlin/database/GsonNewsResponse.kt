@@ -1,9 +1,6 @@
 package com.example.android.newswithkotlin.database
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -30,12 +27,10 @@ data class GsonNewsResults(
 @Entity(tableName = "newstable")
 @Parcelize
 data class News(
-        @ColumnInfo
         @Expose
         @SerializedName("webTitle")
         val title: String = "webTitle",
 
-        @ColumnInfo
         @Expose
         @SerializedName("webUrl")
         val webUrl: String = "webUrl",
@@ -47,7 +42,7 @@ data class News(
         @PrimaryKey(autoGenerate = true)
         var id: Int = 0,
 
-        @ColumnInfo
+        @TypeConverters(TypeConverterForTagsArrayList::class)
         @Expose
         @SerializedName("tags")
         val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable {

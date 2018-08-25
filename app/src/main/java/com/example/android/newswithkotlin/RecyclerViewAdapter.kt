@@ -1,13 +1,16 @@
 package com.example.android.newswithkotlin
 
+import android.arch.lifecycle.LiveData
 import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import com.example.android.newswithkotlin.database.News
+import com.example.android.newswithkotlin.database.NewsDataBase
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
 class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : RecyclerView.Adapter<RecyclerViewAdapter.MyListViewHolder>() {
@@ -31,7 +34,13 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
         val dummyTextViewAuthor = view.text_view_author
         val dummyTextViewWebUrl = view.text_view_web_url
         val favButton: ImageButton = view.fav_image_button
+        // Create NewsDataBase member variable for the Database
+        private var mDb: NewsDataBase? = null
+
         fun bindList(item: News, context: Context) {
+            //initiate Database
+            mDb = NewsDataBase.getInstance(context)
+
             dummyTextViewTitle?.text = item.title
 
             //need to handle author's part as it's not getting initialized properly
