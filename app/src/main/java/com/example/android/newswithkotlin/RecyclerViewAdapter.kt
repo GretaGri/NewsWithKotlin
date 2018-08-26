@@ -11,6 +11,7 @@ import com.example.android.newswithkotlin.database.ContributorContent
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
+
 class RecyclerViewAdapter(val items: ArrayList<News>,
                           val context: Context, val isFav: Boolean = false) : RecyclerView.Adapter<RecyclerViewAdapter.MyListViewHolder>() {
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
@@ -33,7 +34,6 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
         // Create AppDatabase member variable for the Database
         // Member variable for the Database
         private var mDb: AppDatabase? = null
-
 
         // Holds the TextView that will add each item to recyclerView
         val textViewNewsTitle = view.text_view_title
@@ -60,11 +60,11 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
             textViewNewsWebUrl?.text = item.webUrl
 
             favButton.setOnClickListener { view ->
-                saveOrDeleteNews(item, item.tags, isFav)
+                saveOrDeleteNews(item, item.tags, isFav, favButton, context)
             }
         }
 
-        private fun saveOrDeleteNews(item: News, authors: ArrayList<ContributorContent>, isFav: Boolean) {
+        private fun saveOrDeleteNews(item: News, authors: ArrayList<ContributorContent>, isFav: Boolean, favButton: ImageButton, context: Context) {
 
             AppExecutors.instance.diskIO.execute(Runnable {
 
@@ -73,6 +73,9 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
                     mDb?.newsDao()?.insertNews(item)
                     if (authors.size > 0)
                         mDb?.newsDao()?.insertAuthorsForNews(authors.get(0))
+
+                    //this code below needs to run outside of AppExecutors
+                    favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
 
                 } else {
                     mDb?.newsDao()?.deleteNews(item)

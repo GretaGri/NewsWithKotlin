@@ -107,7 +107,12 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             queriedForTextView.visibility = View.VISIBLE
             queriedForTextView.text = getString(R.string.search_queried_for, usersQuery)
             recyclerView.visibility = View.VISIBLE
-            recyclerView.adapter = RecyclerViewAdapter(listOfNews, context)
+            runOnUiThread(Runnable() {
+                run() {
+                    recyclerView.adapter = RecyclerViewAdapter(listOfNews, context)
+                }
+            })
+
         }
     }
 
