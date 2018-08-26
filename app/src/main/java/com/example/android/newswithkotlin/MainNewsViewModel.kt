@@ -18,7 +18,7 @@ class MainNewsViewModel (application: Application) : AndroidViewModel(applicatio
        // super(application)// constructor that gets one parameter type application.
         val dataBase = NewsDataBase.getInstance(this.getApplication())
         Log.d(TAG, "Actively retrieving the tasks from Database")
-        news = dataBase.NewsDao().loadAllNews()
+        news = dataBase.newsDao().loadAllNews()
     }
 
     companion object {

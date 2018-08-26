@@ -13,7 +13,7 @@ import android.content.Context
 @TypeConverters(TypeConverterForTagsArrayList::class)
 abstract class NewsDataBase : RoomDatabase() {
 
-    abstract fun NewsDao(): NewsDao
+    abstract fun newsDao(): NewsDao
 
     companion object {
         private val DB_NAME = "news.db"
