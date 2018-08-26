@@ -22,6 +22,7 @@ class FavoriteActivity : AppCompatActivity() {
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
@@ -71,6 +72,6 @@ class FavoriteActivity : AppCompatActivity() {
         for (item in listOfNews) {
             arrayListOfNews.add(item)
         }
-        recyclerView.adapter = RecyclerViewAdapter(arrayListOfNews, context)
+        recyclerView.adapter = RecyclerViewAdapter(arrayListOfNews, context, true)
     }
 }

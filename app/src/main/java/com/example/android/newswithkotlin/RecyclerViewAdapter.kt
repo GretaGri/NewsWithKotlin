@@ -12,10 +12,10 @@ import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
 class RecyclerViewAdapter(val items: ArrayList<News>,
-                          val context: Context) : RecyclerView.Adapter<RecyclerViewAdapter.MyListViewHolder>() {
-
+                          val context: Context, val isFav: Boolean = false) : RecyclerView.Adapter<RecyclerViewAdapter.MyListViewHolder>() {
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
-        holder.bindList(items[position], context)
+
+        holder.bindList(items[position], context, isFav)
     }
 
     // Inflates the item views
@@ -30,18 +30,6 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
 
     open class MyListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        companion object {
-            // Extra for the task ID to be received in the intent
-            val EXTRA_TASK_ID = "extraTaskId"
-            // Extra for the task ID to be received after rotation
-            val INSTANCE_TASK_ID = "instanceTaskId"
-        }
-
-
-        // Constant for default task id to be used when not in update mode
-        val DEFAULT_TASK_ID = -1
-        var mTaskId = DEFAULT_TASK_ID
-
         // Create AppDatabase member variable for the Database
         // Member variable for the Database
         private var mDb: AppDatabase? = null
@@ -52,7 +40,7 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
         val textViewAuthorTitle = view.text_view_author
         val textViewNewsWebUrl = view.text_view_web_url
         val favButton: ImageButton = view.fav_image_button
-        fun bindList(item: News, context: Context) {
+        fun bindList(item: News, context: Context, isFav: Boolean) {
             mDb = AppDatabase.getInstance(context)
             textViewNewsTitle?.text = item.title
 
@@ -72,16 +60,23 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
             textViewNewsWebUrl?.text = item.webUrl
 
             favButton.setOnClickListener { view ->
-                saveNews(item, item.tags)
+                saveOrDeleteNews(item, item.tags, isFav)
             }
         }
 
-        private fun saveNews(item: News, authors: ArrayList<ContributorContent>) {
+        private fun saveOrDeleteNews(item: News, authors: ArrayList<ContributorContent>, isFav: Boolean) {
+
             AppExecutors.instance.diskIO.execute(Runnable {
-                //add the news and the author setails to the database on fav click
-                mDb?.newsDao()?.insertNews(item)
-                if (authors.size > 0)
-                    mDb?.newsDao()?.insertAuthorsForNews(authors.get(0))
+
+                if (!isFav) {
+                    //add the news and the author setails to the database on fav click
+                    mDb?.newsDao()?.insertNews(item)
+                    if (authors.size > 0)
+                        mDb?.newsDao()?.insertAuthorsForNews(authors.get(0))
+
+                } else {
+                    mDb?.newsDao()?.deleteNews(item)
+                }
             })
         }
     }
