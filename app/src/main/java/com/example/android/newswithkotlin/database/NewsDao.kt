@@ -24,6 +24,6 @@ interface NewsDao {
     @Query("SELECT * FROM authorstable WHERE idContributor IS :idContributor")
     fun getAuthorsForNews(idContributor: Int): List<ContributorContent>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAuthorsForNews(author: ContributorContent)
 }

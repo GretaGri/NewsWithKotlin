@@ -26,7 +26,7 @@ data class GsonNewsResults(
 //main news content
 //UNIQUE field referenced from: https://stackoverflow.com/a/48736187
 @Entity(tableName = "newstable",
-        indices = arrayOf(Index(value = "webUrl", unique = true)))
+        indices = arrayOf(Index(value = ["webUrl", "title"], unique = true)))
 @Parcelize
 data class News(
         @Expose
@@ -38,8 +38,8 @@ data class News(
         /*to exclude this field from being parsed/serialized and desrialized,
         we can ignore by setting these annotations to false
         */
-        @Expose(deserialize = false, serialize = false)
         @PrimaryKey(autoGenerate = true)
+        @Expose(deserialize = false, serialize = false)
         var id: Int = 0,
 
         @Expose
