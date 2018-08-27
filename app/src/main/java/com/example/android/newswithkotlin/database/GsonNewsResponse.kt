@@ -40,15 +40,16 @@ data class News(
         @Expose(deserialize = false, serialize = false)
         @ColumnInfo(name = "id")
         @PrimaryKey(autoGenerate = true)
-        var id: Int = 0,
+        var id: Int = 0//,
 
-        @TypeConverters(TypeConverterForTagsArrayList::class)
-        @Expose
-        @SerializedName("tags")
-        val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable {
-        @Ignore
-        constructor () : this("title", "webUrl",0, ArrayList<ContributerContent>())
-}
+      //  @TypeConverters(TypeConverterForTagsArrayList::class)
+     //   @Expose
+      //  @SerializedName("tags")
+      //  val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable {
+
+):Parcelable { @Ignore
+constructor () : this("title", "webUrl",0)}
+//}
 
 //author details
 @Parcelize

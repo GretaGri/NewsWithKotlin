@@ -1,21 +1,19 @@
 package com.example.android.newswithkotlin
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.android.newswithkotlin.database.News
 import com.example.android.newswithkotlin.database.NewsDataBase
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
-import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
-import android.support.v4.app.FragmentActivity
-import android.util.Log
 
 
 class FavoriteActivity : AppCompatActivity() {
@@ -23,20 +21,15 @@ class FavoriteActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
+    lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // my_child_toolbar is defined in the layout file
-        setSupportActionBar(findViewById(R.id.toolbar))
-
-        // Get a support ActionBar corresponding to this toolbar and enable the Up button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        // set title Favorites
-        supportActionBar?.setTitle(R.string.favorites)
-
         //initialize views and hide unnecessary views
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.visibility = View.GONE
         emptyView = findViewById(R.id.empty_view)
         emptyView.visibility = View.GONE
         queriedForTextView = findViewById(R.id.queried_for_text_view)

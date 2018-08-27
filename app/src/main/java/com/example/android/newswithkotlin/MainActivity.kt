@@ -2,6 +2,7 @@ package com.example.android.newswithkotlin
 
 import android.app.DialogFragment
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -126,8 +127,8 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_favorites -> {
-                Toast.makeText(this, "Sorry, this feature is not available",
-                        Toast.LENGTH_SHORT).show();
+                val goToFavorites =  Intent(this, FavoriteActivity::class.java)
+                startActivity(goToFavorites)
                 true
             }
             else -> super.onOptionsItemSelected(item)

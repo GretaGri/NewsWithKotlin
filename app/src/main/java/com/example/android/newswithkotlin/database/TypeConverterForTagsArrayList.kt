@@ -1,10 +1,8 @@
 package com.example.android.newswithkotlin.database
 
 import android.arch.persistence.room.TypeConverter
-import android.util.Log
-import com.google.gson.reflect.TypeToken
 import com.google.gson.Gson
-
+import com.google.gson.reflect.TypeToken
 
 
 /**
@@ -12,20 +10,17 @@ import com.google.gson.Gson
  */
 class TypeConverterForTagsArrayList {
 
-    companion object {
-
-
-    @TypeConverter @JvmStatic
+    @TypeConverter
     fun arrayListToString(listToBeConverted: ArrayList<ContributerContent>?): String? {
        if (listToBeConverted!=null){
         val gson = Gson()
            return gson.toJson(listToBeConverted)}
-        else return null
+        else return "No author"
 }
 
-    @TypeConverter @JvmStatic
+    @TypeConverter
     fun stringToArrayList(stringToBeConverted: String?): ArrayList<ContributerContent>?{
-     if(stringToBeConverted == null)  {
+     if(stringToBeConverted.equals("No author"))  {
          return null
      } else{
          val listType = object : TypeToken<ArrayList<ContributerContent>>() {
@@ -34,4 +29,3 @@ class TypeConverterForTagsArrayList {
     }
     }
     }
-}

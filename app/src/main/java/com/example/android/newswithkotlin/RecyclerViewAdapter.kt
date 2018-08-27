@@ -41,8 +41,8 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
             dummyTextViewTitle?.text = item.title
 
             //need to handle author's part as it's not getting initialized properly
-            if (item.tags.size > 0)
-                dummyTextViewAuthor?.text = item.tags[0].title
+          //  if (item.tags.size > 0)
+           //     dummyTextViewAuthor?.text = item.tags[0].title
             dummyTextViewWebUrl?.text = item.webUrl
 
             //add item to favorites on fav button click

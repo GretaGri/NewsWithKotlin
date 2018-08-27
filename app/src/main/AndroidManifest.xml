@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".FavoriteActivity"
+            android:label="@string/favorites"
             android:parentActivityName="com.example.android.newswithkotlin.MainActivity">
 
         <!-- Parent activity meta-data to support 4.0 and lower -->
