@@ -14,7 +14,7 @@ interface NewsDao {
     fun loadAllNews(): LiveData<List<News>>
 
     //a method to insert one news item.
-    @Insert
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
     fun insertNews(newsItem: News)
 
     //a method to update news

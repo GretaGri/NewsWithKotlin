@@ -41,21 +41,24 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
             dummyTextViewTitle?.text = item.title
 
             //need to handle author's part as it's not getting initialized properly
-          //  if (item.tags.size > 0)
-           //     dummyTextViewAuthor?.text = item.tags[0].title
+            if (item.tags.size > 0)
+                dummyTextViewAuthor?.text = item.tags[0].title
             dummyTextViewWebUrl?.text = item.webUrl
 
             //add item to favorites on fav button click
             favButton.setOnClickListener { view ->
-                saveorDeleteNews(item)
+                saveOrDeleteNews(item)
             }
         }
 
-        private fun saveorDeleteNews(item: News) {
+        private fun saveOrDeleteNews(item: News) {
             AppExecutors.instance.diskIO.execute(Runnable {
-                //add the news and the author setails to the database on fav click
+                //add the news together with the author details to the database on fav click
                 mDb?.newsDao()?.insertNews(item)
-                AppExecutors.instance.mainThread.execute(Runnable {favButton.setImageResource(R.drawable.ic_favorite_red_24dp)})
+                AppExecutors.instance.mainThread.execute(Runnable {favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
+                //temporary disable favorite button till delete function is not working.
+                  //  favButton.isClickable = false
+                })
             })
         }
     }

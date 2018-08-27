@@ -10,22 +10,25 @@ import com.google.gson.reflect.TypeToken
  */
 class TypeConverterForTagsArrayList {
 
-    @TypeConverter
-    fun arrayListToString(listToBeConverted: ArrayList<ContributerContent>?): String? {
-       if (listToBeConverted!=null){
-        val gson = Gson()
-           return gson.toJson(listToBeConverted)}
-        else return "No author"
-}
+    companion object {
 
-    @TypeConverter
-    fun stringToArrayList(stringToBeConverted: String?): ArrayList<ContributerContent>?{
-     if(stringToBeConverted.equals("No author"))  {
-         return null
-     } else{
-         val listType = object : TypeToken<ArrayList<ContributerContent>>() {
-        }.type
-        return Gson().fromJson(stringToBeConverted, listType)
+        @TypeConverter @JvmStatic
+        fun arrayListToString(listToBeConverted: ArrayList<ContributerContent>?): String? {
+            if (listToBeConverted != null) {
+                val gson = Gson()
+                return gson.toJson(listToBeConverted)
+            } else return "No author"
+        }
+
+        @TypeConverter @JvmStatic
+        fun stringToArrayList(stringToBeConverted: String?): ArrayList<ContributerContent>? {
+            if (stringToBeConverted.equals("No author")) {
+                return null
+            } else {
+                val listType = object : TypeToken<ArrayList<ContributerContent>>() {
+                }.type
+                return Gson().fromJson(stringToBeConverted, listType)
+            }
+        }
     }
-    }
-    }
+}

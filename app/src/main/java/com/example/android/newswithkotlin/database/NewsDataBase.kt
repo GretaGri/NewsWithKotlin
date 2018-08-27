@@ -17,7 +17,6 @@ abstract class NewsDataBase : RoomDatabase() {
 
     companion object {
         private val DB_NAME = "news.db"
-       // private var INSTANCE: NewsDataBase? = null
        @Volatile private var INSTANCE: NewsDataBase? = null
 
         fun getInstance(context: Context): NewsDataBase =
