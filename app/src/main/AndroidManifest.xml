@@ -22,7 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FavoriteActivity" />
+        <activity android:name=".FavoriteActivity"
+            android:parentActivityName="com.example.android.newswithkotlin.MainActivity">
+
+        <!-- Parent activity meta-data to support 4.0 and lower -->
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.android.newswithkotlin.MainActivity" >
+        </meta-data>
+        </activity>
     </application>
 
 </manifest>

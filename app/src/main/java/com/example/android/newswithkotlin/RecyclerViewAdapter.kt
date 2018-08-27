@@ -1,10 +1,7 @@
 package com.example.android.newswithkotlin
 
-import android.arch.lifecycle.LiveData
 import android.content.Context
-import android.content.Intent
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,11 +44,20 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
             if (item.tags.size > 0)
                 dummyTextViewAuthor?.text = item.tags[0].title
             dummyTextViewWebUrl?.text = item.webUrl
-            //start new intent on fav click
-            val favIntent: Intent = Intent(context, FavoriteActivity::class.java)
+
+            //add item to favorites on fav button click
             favButton.setOnClickListener { view ->
-                Intent(favIntent)
+                saveorDeleteNews(item)
             }
+        }
+
+        private fun saveorDeleteNews(item: News) {
+            AppExecutors.instance.diskIO.execute(Runnable {
+                //add the news and the author setails to the database on fav click
+                mDb?.newsDao()?.insertNews(item)
+                AppExecutors.instance.mainThread.execute(Runnable {favButton.setImageResource(R.drawable.ic_favorite_red_24dp)})
+            })
         }
     }
 }
+

@@ -8,4 +8,5 @@
     <string name="loading_news">Loading news. Please wait...</string>
     <string name="search_hint">What news you\'d like to search for</string>
     <string name="search_queried_for">You searched for: %1$s</string>
+    <string name="favorites">Favorites</string>
 </resources>

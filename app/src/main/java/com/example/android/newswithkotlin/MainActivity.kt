@@ -34,7 +34,10 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+
+        // my_child_toolbar is defined in the layout file
+        setSupportActionBar(findViewById(R.id.toolbar))
+
 
         //initialize views
         recyclerView = findViewById(R.id.recycler_view)
@@ -122,7 +125,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> {
+            R.id.action_favorites -> {
                 Toast.makeText(this, "Sorry, this feature is not available",
                         Toast.LENGTH_SHORT).show();
                 true
