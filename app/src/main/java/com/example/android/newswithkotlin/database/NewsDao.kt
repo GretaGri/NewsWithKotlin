@@ -26,4 +26,8 @@ interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAuthorsForNews(author: ContributorContent)
+
+
+    @Query("SELECT * FROM newstable ORDER BY id")
+    fun loadAllNewsInArrayListForm(): List<News>
 }

@@ -32,6 +32,7 @@ data class News(
         @Expose
         @SerializedName("webTitle")
         var title: String = "webTitle",
+
         @Expose
         @SerializedName("webUrl")
         var webUrl: String = "webUrl",
@@ -40,7 +41,7 @@ data class News(
         */
         @PrimaryKey(autoGenerate = true)
         @Expose(deserialize = false, serialize = false)
-        var id: Int = 0,
+        var id: Int,
 
         @Expose
         @Ignore
@@ -63,7 +64,7 @@ and https://medium.com/@tonyowen/room-entity-annotations-379150e1ca82
 data class ContributorContent(
         @Expose(deserialize = false, serialize = false)
         @PrimaryKey(autoGenerate = true)
-        var idContributor: Int = 0,
+        var idContributor: Int,
         @Expose
         @SerializedName("webTitle")
         var title: String = "webTitle",

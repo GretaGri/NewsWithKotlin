@@ -1,7 +1,5 @@
 package com.example.android.newswithkotlin
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -14,7 +12,11 @@ import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.main_layout.*
 
-class FavoriteActivity : AppCompatActivity() {
+class FavoriteActivity : AppCompatActivity(), GetFavoriteNewsFromDatabase.FavoriteFetchingRequestListener {
+
+    override fun onNewsFetchCallMade(newsList: ArrayList<News>) {
+        setupRecyclerView(this@FavoriteActivity, newsList)
+    }
 
 
     private var mDb: AppDatabase? = null
@@ -53,25 +55,19 @@ class FavoriteActivity : AppCompatActivity() {
         //setup recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = RecyclerViewAdapter(ArrayList<News>(), this)
-        setupViewModel()
+        handleDatabase()
     }
 
-    private fun setupViewModel() {
-        val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
-        viewModel.newses.observe(this, object : Observer<List<News>> {
-            override fun onChanged(newsEntries: List<News>?) {
-                setupRecyclerView(this@FavoriteActivity, newsEntries!!)
-            }
-        })
-    }
-
-    fun setupRecyclerView(context: Context, listOfNews: List<News>) {
+    fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {
         recyclerView.visibility = View.VISIBLE
-        val arrayListOfNews: ArrayList<News> = ArrayList()
+        recyclerView.adapter = RecyclerViewAdapter(listOfNews, context, true)
+    }
 
-        for (item in listOfNews) {
-            arrayListOfNews.add(item)
-        }
-        recyclerView.adapter = RecyclerViewAdapter(arrayListOfNews, context, true)
+    private fun handleDatabase() {
+        val searchDatabaseFragment = GetFavoriteNewsFromDatabase()
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.favorite_search_fragment, searchDatabaseFragment)
+                .commit()
     }
 }
