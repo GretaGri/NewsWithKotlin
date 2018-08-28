@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper.getMainLooper
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,14 +20,12 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
         RecyclerView.Adapter<MainRecyclerViewAdapter.MyListViewHolder>() {
 
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
-        Log.v("my_tag", "onBindViewHolder method called")
         holder.bindList(items[position], context, favNewsList)
     }
 
 
     // Inflates the item views
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyListViewHolder {
-        Log.v("my_tag", "onCreateViewHolder method called")
         return MyListViewHolder(LayoutInflater.from(context).inflate(R.layout.news_list_item, parent,
                 false))
     }
@@ -60,9 +57,11 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
 
 
             var isFav = false
+            var favNews = News()
             for (news in favNewsFromDatabase) {
                 if (news.webUrl.equals(item.webUrl)) {
                     isFav = true
+                    favNews = news
                     favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
                     break
                 } else {
@@ -71,23 +70,23 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
                 }
             }
             favButton.setOnClickListener { view ->
-                saveOrDeleteNews(item, isFav, favButton, item.tags)
+                //deleteNews(item, isFav, favButton, item.tags)
+                saveOrDeleteNews(item, isFav, favNews, favButton, item.tags)
             }
             textViewNewsWebUrl?.text = item.webUrl
 
         }
 
-        private fun saveOrDeleteNews(item: News, isFav: Boolean, imgButton: ImageButton, authorList: ArrayList<ContributorContent>) {
-            Log.v("my_tagggg", "item title is: " + item.webUrl)
+        private fun saveOrDeleteNews(item: News, isFav: Boolean, favNews: News, imgButton: ImageButton, authorList: ArrayList<ContributorContent>) {
             if (isFav) {
                 AppExecutors.instance.diskIO.execute(Runnable {
-                    mDb?.newsDao()?.deleteNews(item)
                     if (authorList.size > 0)
-                        mDb?.newsDao()?.deleteNewsAuthors(item.tags[0])
-                })
-                val h = Handler(getMainLooper())
-                h.post(Runnable {
-                    imgButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
+                        mDb?.newsDao()?.deleteNewsAuthors(favNews.tags[0])
+                    mDb?.newsDao()?.deleteNews(favNews)
+                    val h = Handler(getMainLooper())
+                    h.post(Runnable {
+                        imgButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
+                    })
                 })
             } else {
                 AppExecutors.instance.diskIO.execute(Runnable {
@@ -96,11 +95,13 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
                         mDb?.newsDao()?.insertAuthorsForNews(item.tags[0])
                     else
                         mDb?.newsDao()?.insertAuthorsForNews(ContributorContent())
+
+                    val h = Handler(getMainLooper())
+                    h.post(Runnable {
+                        imgButton.setImageResource(R.drawable.ic_favorite_red_24dp)
+                    })
                 })
-                val h = Handler(getMainLooper())
-                h.post(Runnable {
-                    imgButton.setImageResource(R.drawable.ic_favorite_red_24dp)
-                })
+
             }
         }
     }
