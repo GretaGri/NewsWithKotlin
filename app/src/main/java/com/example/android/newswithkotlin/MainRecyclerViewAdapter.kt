@@ -15,26 +15,27 @@ import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
 
-class MainRecyclerViewAdapter(val items: ArrayList<News>,
-                              val context: Context, var favNewsList: ArrayList<News>) : RecyclerView.Adapter<MainRecyclerViewAdapter.MyListViewHolder>() {
+class MainRecyclerViewAdapter(var items: ArrayList<News>,
+                              val context: Context,
+                              var favNewsList: ArrayList<News>) :
+        RecyclerView.Adapter<MainRecyclerViewAdapter.MyListViewHolder>() {
+
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
+        Log.v("my_tag", "onBindViewHolder method called")
         holder.bindList(items[position], context, favNewsList)
     }
 
 
     // Inflates the item views
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyListViewHolder {
-        return MyListViewHolder(LayoutInflater.from(context).inflate(R.layout.news_list_item, parent, false))
+        Log.v("my_tag", "onCreateViewHolder method called")
+        return MyListViewHolder(LayoutInflater.from(context).inflate(R.layout.news_list_item, parent,
+                false))
     }
 
     // Gets the number of items in the list
     override fun getItemCount(): Int {
         return items.size
-    }
-
-    fun refreshAdapterWithUpdatedDataInDatabase(listOfNewFromDatabase: ArrayList<News>) {
-        this.favNewsList = listOfNewFromDatabase
-        notifyDataSetChanged()
     }
 
     open class MyListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -58,56 +59,35 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
             }
 
 
+            var isFav = false
             for (news in favNewsFromDatabase) {
                 if (news.webUrl.equals(item.webUrl)) {
+                    isFav = true
                     favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
-                    favButton.tag = "fav"
+                    break
                 } else {
+                    isFav = false
                     favButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
-                    favButton.tag = "notfav"
                 }
             }
-
-
-//            AppExecutors.instance.diskIO.execute(Runnable {
-//                val favItem = mDb?.newsDao()?.loadAllNewsArrayListFromDatabase()!!
-//                for (news in favItem) {
-//                    if (news.webUrl.equals(item.webUrl)) {
-//                        val h = Handler(getMainLooper())
-//                        h.post(Runnable {
-//                            favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
-//                            favButton.tag = "fav"
-//                        })
-//                    } else {
-//                        val h = Handler(getMainLooper())
-//                        h.post(Runnable {
-//                            favButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
-//                            favButton.tag = "notfav"
-//                        })
-//                    }
-//                }
-//
-//            })
             favButton.setOnClickListener { view ->
-                saveOrDeleteNews(item, favNewsFromDatabase, favButton, item.tags)
+                saveOrDeleteNews(item, isFav, favButton, item.tags)
             }
             textViewNewsWebUrl?.text = item.webUrl
-            Log.v("my_tag", "tag is: " + favButton.tag)
 
         }
 
-        private fun saveOrDeleteNews(item: News, favNewsFromDatabase: ArrayList<News>, imgButton: ImageButton, authorList: ArrayList<ContributorContent>) {
-
-            if (imgButton.tag.equals("fav")) {
+        private fun saveOrDeleteNews(item: News, isFav: Boolean, imgButton: ImageButton, authorList: ArrayList<ContributorContent>) {
+            Log.v("my_tagggg", "item title is: " + item.webUrl)
+            if (isFav) {
                 AppExecutors.instance.diskIO.execute(Runnable {
                     mDb?.newsDao()?.deleteNews(item)
                     if (authorList.size > 0)
-                        mDb?.newsDao()?.deleteNewsAuthors(authorList.get(0))
+                        mDb?.newsDao()?.deleteNewsAuthors(item.tags[0])
                 })
                 val h = Handler(getMainLooper())
                 h.post(Runnable {
                     imgButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
-                    imgButton.tag = "notfav"
                 })
             } else {
                 AppExecutors.instance.diskIO.execute(Runnable {
@@ -120,7 +100,6 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
                 val h = Handler(getMainLooper())
                 h.post(Runnable {
                     imgButton.setImageResource(R.drawable.ic_favorite_red_24dp)
-                    imgButton.tag = "fav"
                 })
             }
         }

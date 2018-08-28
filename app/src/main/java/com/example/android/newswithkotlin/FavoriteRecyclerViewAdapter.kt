@@ -52,7 +52,11 @@ class FavoriteRecyclerViewAdapter(val items: ArrayList<News>,
                 AppExecutors.instance.diskIO.execute(Runnable {
                     for (author in (mDb?.newsDao()?.getAuthorsForNews(item.id)!!)) {
                         if (!((mDb?.newsDao()?.getAuthorsForNews(item.id)!!).isEmpty())) {
-                            textViewAuthorTitle?.text = (mDb?.newsDao()?.getAuthorsForNews(item.id)!!).get(0).title
+                            val title = (mDb?.newsDao()?.getAuthorsForNews(item.id)!!).get(0).title
+                            val h = Handler(Looper.getMainLooper())
+                            h.post(Runnable {
+                                textViewAuthorTitle?.text = title
+                            })
                         }
                     }
                 })

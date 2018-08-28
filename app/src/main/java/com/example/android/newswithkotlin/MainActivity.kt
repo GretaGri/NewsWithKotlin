@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
     lateinit var progressBar: ProgressBar
 
     var newsFromApi = ArrayList<News>()
+    var newsFromDatabase = ArrayList<News>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         //initialize views
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = MainRecyclerViewAdapter(ArrayList(), this, ArrayList())
+        recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi, this, newsFromDatabase)
 
         emptyView = findViewById(R.id.empty_view)
         queriedForTextView = findViewById(R.id.queried_for_text_view)
@@ -112,7 +114,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             recyclerView.visibility = View.VISIBLE
             runOnUiThread(Runnable() {
                 run() {
-                    recyclerView.adapter = MainRecyclerViewAdapter(listOfNews, context, ArrayList())
+                    recyclerView.adapter = MainRecyclerViewAdapter(listOfNews, context, newsFromDatabase)
                 }
             })
 
@@ -148,12 +150,13 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
         viewModel.newses.observe(this, object : Observer<List<News>?> {
             override fun onChanged(t: List<News>?) {
-                val mainAdapter = MainRecyclerViewAdapter(newsFromApi, this@MainActivity, ArrayList())
+                Log.v("my_tag", "onChanged called")
                 val arrayListOfNewFromListOfNews = ArrayList<News>()
                 for (news in t!!) {
                     arrayListOfNewFromListOfNews.add(news)
                 }
-                mainAdapter.refreshAdapterWithUpdatedDataInDatabase(arrayListOfNewFromListOfNews)
+                newsFromDatabase = arrayListOfNewFromListOfNews
+                recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi, this@MainActivity, newsFromDatabase)
             }
         })
     }
