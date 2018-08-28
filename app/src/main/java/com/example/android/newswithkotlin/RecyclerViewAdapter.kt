@@ -1,7 +1,9 @@
 package com.example.android.newswithkotlin
 
+import android.arch.lifecycle.LiveData
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,26 +42,36 @@ class RecyclerViewAdapter(val items: ArrayList<News>, val context: Context) : Re
 
             dummyTextViewTitle?.text = item.title
 
-            //need to handle author's part as it's not getting initialized properly
+            //to handle author's part
             if (item.tags.size > 0)
                 dummyTextViewAuthor?.text = item.tags[0].title
             dummyTextViewWebUrl?.text = item.webUrl
 
+            if (item.favorite == 0) favButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
+            if (item.favorite == 1) favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
+
             //add item to favorites on fav button click
             favButton.setOnClickListener { view ->
-                saveOrDeleteNews(item)
-            }
-        }
+                AppExecutors.instance.diskIO.execute(Runnable {
+                    //add the news together with the author details to the database on fav click
+                    val itemFavoriteValue: Int? = mDb?.newsDao()?.loadTaskByTitle(item.title)
+                    Log.d("My tag", "item favorite value is: ${itemFavoriteValue}")
+                    if (itemFavoriteValue == 1) {
+                        AppExecutors.instance.mainThread.execute(Runnable {
+                            item.favorite = 0
+                            Log.d("My tag", "item content is:" + item.toString())
+                        })
 
-        private fun saveOrDeleteNews(item: News) {
-            AppExecutors.instance.diskIO.execute(Runnable {
-                //add the news together with the author details to the database on fav click
-                mDb?.newsDao()?.insertNews(item)
-                AppExecutors.instance.mainThread.execute(Runnable {favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
-                //temporary disable favorite button till delete function is not working.
-                  //  favButton.isClickable = false
+                    }
+                    if (itemFavoriteValue == 0) {
+                        AppExecutors.instance.mainThread.execute(Runnable {
+                            item.favorite = 1
+                            Log.d("My tag", "item content is:" + item.toString())
+                        })
+                    }
+                    mDb?.newsDao()?.updateNews(item)
                 })
-            })
+            }
         }
     }
 }

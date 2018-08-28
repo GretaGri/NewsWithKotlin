@@ -32,4 +32,17 @@ interface NewsDao {
     //a method to select news item with id
     @Query("SELECT * FROM newstable WHERE id = :id")
     fun loadTaskById(id: Int): LiveData<News>
+
+    //a method to select news item with favorites column value
+    @Query("SELECT * FROM newstable WHERE favorite = :favorite")
+    fun loadFavorites(favorite: Int):LiveData<List<News>>
+
+    //a method to select news item with favorites column value and return a list
+    @Query("SELECT * FROM newstable WHERE favorite = :favorite")
+    fun loadFavoritesInAList(favorite: Int):List<News>
+
+
+    //a method to select news item with title
+    @Query("SELECT favorite FROM newstable WHERE title = :title")
+    fun loadTaskByTitle(title: String): Int
 }

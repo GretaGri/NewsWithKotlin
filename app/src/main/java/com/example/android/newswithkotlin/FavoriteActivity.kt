@@ -17,7 +17,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class FavoriteActivity : AppCompatActivity() {
-    private var mDb: NewsDataBase? = null
+   // private var mDb: NewsDataBase? = null
+    private var news: List<News>? = null
     lateinit var recyclerView: RecyclerView
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
@@ -37,22 +38,23 @@ class FavoriteActivity : AppCompatActivity() {
         fab.visibility = View.GONE
 
         //initialize Database instance
-        mDb = NewsDataBase.getInstance(applicationContext)
+        AppExecutors.instance.diskIO.execute(Runnable {news = NewsDataBase.getInstance(applicationContext)
+                .newsDao().loadFavoritesInAList(1)})
 
         //set up RecyclerView with the list of favorite items form DB.
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = RecyclerViewAdapter(ArrayList<News>(), this)
+       //Need to get favorite news from db..
+
         setupViewModel()
-
-
     }
 
     fun setupViewModel(){
-        val viewModel = ViewModelProviders.of(this).get(MainNewsViewModel::class.java!!)
+        val viewModel = ViewModelProviders.of(this).get(FavoriteNewsViewModel::class.java!!)
         viewModel.news.observe(this, object : Observer<List<News>> {
             override fun onChanged(news: List<News>?) {
-                Log.d("My tag", "Updating list of news from LiveData in MainNewsViewModel")
+                Log.d("My tag", "Updating list of news from LiveData in FavoriteNewsViewModel")
+
                 setupRecyclerView(this@FavoriteActivity, news)
             }
         })

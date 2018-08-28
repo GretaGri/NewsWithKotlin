@@ -17,7 +17,7 @@ class MainNewsViewModel (application: Application) : AndroidViewModel(applicatio
    init{
        // super(application)// constructor that gets one parameter type application.
         val dataBase = NewsDataBase.getInstance(this.getApplication())
-        Log.d(TAG, "Actively retrieving the tasks from Database")
+        Log.d(TAG, "Actively retrieving the news from Database")
         news = dataBase.newsDao().loadAllNews()
     }
 

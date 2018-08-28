@@ -42,12 +42,16 @@ data class News(
         @PrimaryKey(autoGenerate = true)
         var id: Int = 0,
 
+        //column for detecting favorite items
+        @Expose(deserialize = false, serialize = false)
+        var favorite: Int = 0,
+
         @TypeConverters(TypeConverterForTagsArrayList::class)
         @Expose
         @SerializedName("tags")
         val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable {
     @Ignore
-    constructor () : this("title", "webUrl", 0)
+    constructor () : this("title", "webUrl", 0,0, ArrayList<ContributerContent>())
 }
 
 
