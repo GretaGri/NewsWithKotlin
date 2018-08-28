@@ -41,7 +41,7 @@ data class News(
         */
         @PrimaryKey(autoGenerate = true)
         @Expose(deserialize = false, serialize = false)
-        var id: Int,
+        var id: Int = 0,
 
         @Expose
         @Ignore
@@ -64,10 +64,10 @@ and https://medium.com/@tonyowen/room-entity-annotations-379150e1ca82
 data class ContributorContent(
         @Expose(deserialize = false, serialize = false)
         @PrimaryKey(autoGenerate = true)
-        var idContributor: Int,
+        var idContributor: Int = 0,
         @Expose
         @SerializedName("webTitle")
-        var title: String = "webTitle",
+        var title: String = "No news title found",
         @Expose
-        @SerializedName("apiUrl")
+        @SerializedName("")
         var apiUrl: String = "apiUrl") : Parcelable

@@ -27,7 +27,12 @@ interface NewsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAuthorsForNews(author: ContributorContent)
 
+    @Query("SELECT * FROM authorstable ORDER BY idContributor")
+    fun loadAllAuthors(): LiveData<List<ContributorContent>>
 
     @Query("SELECT * FROM newstable ORDER BY id")
-    fun loadAllNewsInArrayListForm(): List<News>
+    fun loadAllNewsArrayListFromDatabase(): List<News>
+
+    @Delete
+    fun deleteNewsAuthors(newsAuthors: ContributorContent)
 }

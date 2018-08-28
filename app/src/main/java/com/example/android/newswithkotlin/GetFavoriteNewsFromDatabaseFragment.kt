@@ -10,13 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.android.newswithkotlin.database.News
 
-class GetFavoriteNewsFromDatabase : Fragment() {
+class GetFavoriteNewsFromDatabaseFragment : Fragment() {
 
-    interface FavoriteFetchingRequestListener {
+    interface FavoriteNewsFetchingRequestListener {
         fun onNewsFetchCallMade(newsList: ArrayList<News>)
     }
 
-    var databaseQueryListener: FavoriteFetchingRequestListener? = null
+    var newsTableQueryListener: FavoriteNewsFetchingRequestListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_search
@@ -33,7 +33,7 @@ class GetFavoriteNewsFromDatabase : Fragment() {
                 for (news in newsEntries!!) {
                     newsArrayList.add(news)
                 }
-                databaseQueryListener?.onNewsFetchCallMade(newsArrayList)
+                newsTableQueryListener?.onNewsFetchCallMade(newsArrayList)
             }
         })
     }
@@ -41,7 +41,7 @@ class GetFavoriteNewsFromDatabase : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        databaseQueryListener = activity as FavoriteFetchingRequestListener
+        newsTableQueryListener = activity as FavoriteNewsFetchingRequestListener
         setupViewModel()
     }
 }

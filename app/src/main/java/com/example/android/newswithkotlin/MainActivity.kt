@@ -1,6 +1,8 @@
 package com.example.android.newswithkotlin
 
 import android.app.DialogFragment
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -21,7 +23,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener {
 
     // declare recyclerView instance with lateinit so that it can be handled without any NPE
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
     lateinit var queriedForTextView: TextView
     lateinit var progressBar: ProgressBar
 
-
+    var newsFromApi = ArrayList<News>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         //initialize views
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = RecyclerViewAdapter(ArrayList<News>(), this)
+        recyclerView.adapter = MainRecyclerViewAdapter(ArrayList(), this, ArrayList())
 
         emptyView = findViewById(R.id.empty_view)
         queriedForTextView = findViewById(R.id.queried_for_text_view)
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         fab.setOnClickListener { view ->
             showDialogFragment()
         }
+        setupViewModel()
     }
 
     private fun showDialogFragment() {
@@ -88,7 +90,8 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
                 val resource = response?.body()
                 this@MainActivity.runOnUiThread {
                     progressBar.visibility = View.GONE
-                    setupRecyclerView(applicationContext, resource?.response?.newsItem!!, usersQuery)
+                    newsFromApi = resource?.response?.newsItem!!
+                    setupRecyclerView(applicationContext, resource.response.newsItem, usersQuery)
 
                 }
             }
@@ -109,7 +112,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             recyclerView.visibility = View.VISIBLE
             runOnUiThread(Runnable() {
                 run() {
-                    recyclerView.adapter = RecyclerViewAdapter(listOfNews, context)
+                    recyclerView.adapter = MainRecyclerViewAdapter(listOfNews, context, ArrayList())
                 }
             })
 
@@ -139,5 +142,19 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         //start new intent on fav click
         val favIntent = Intent(context, FavoriteActivity::class.java)
         context.startActivity(favIntent)
+    }
+
+    private fun setupViewModel() {
+        val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
+        viewModel.newses.observe(this, object : Observer<List<News>?> {
+            override fun onChanged(t: List<News>?) {
+                val mainAdapter = MainRecyclerViewAdapter(newsFromApi, this@MainActivity, ArrayList())
+                val arrayListOfNewFromListOfNews = ArrayList<News>()
+                for (news in t!!) {
+                    arrayListOfNewFromListOfNews.add(news)
+                }
+                mainAdapter.refreshAdapterWithUpdatedDataInDatabase(arrayListOfNewFromListOfNews)
+            }
+        })
     }
 }

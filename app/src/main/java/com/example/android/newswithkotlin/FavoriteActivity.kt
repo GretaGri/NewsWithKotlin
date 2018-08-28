@@ -8,16 +8,16 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
+import com.example.android.newswithkotlin.GetFavoriteNewsFromDatabaseFragment.FavoriteNewsFetchingRequestListener
 import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.main_layout.*
 
-class FavoriteActivity : AppCompatActivity(), GetFavoriteNewsFromDatabase.FavoriteFetchingRequestListener {
+class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListener {
 
     override fun onNewsFetchCallMade(newsList: ArrayList<News>) {
         setupRecyclerView(this@FavoriteActivity, newsList)
     }
-
 
     private var mDb: AppDatabase? = null
     lateinit var recyclerView: RecyclerView
@@ -54,17 +54,17 @@ class FavoriteActivity : AppCompatActivity(), GetFavoriteNewsFromDatabase.Favori
 
         //setup recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = RecyclerViewAdapter(ArrayList<News>(), this)
+        recyclerView.adapter = FavoriteRecyclerViewAdapter(ArrayList<News>(), this)
         handleDatabase()
     }
 
     fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {
         recyclerView.visibility = View.VISIBLE
-        recyclerView.adapter = RecyclerViewAdapter(listOfNews, context, true)
+        recyclerView.adapter = FavoriteRecyclerViewAdapter(listOfNews, context)
     }
 
     private fun handleDatabase() {
-        val searchDatabaseFragment = GetFavoriteNewsFromDatabase()
+        val searchDatabaseFragment = GetFavoriteNewsFromDatabaseFragment()
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.favorite_search_fragment, searchDatabaseFragment)

@@ -56,5 +56,6 @@
         android:background="@color/colorBackground"
         android:src="@drawable/ic_favorite_border_red_24dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:tag="notfav"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
