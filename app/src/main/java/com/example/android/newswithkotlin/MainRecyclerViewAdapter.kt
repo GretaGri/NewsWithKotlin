@@ -80,7 +80,11 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
         private fun saveOrDeleteNews(item: News, isFav: Boolean, favNews: News, imgButton: ImageButton, authorList: ArrayList<ContributorContent>) {
             if (isFav) {
                 AppExecutors.instance.diskIO.execute(Runnable {
-                    if (authorList.size > 0)
+                    /*greta's suggestion to handle authors NPE
+                    if (authorList.size > 0 && favNews.tags.size > 0)
+                        mDb?.newsDao()?.deleteNewsAuthors(favNews.tags[0])
+                    */
+                    if (authorList.size > 0 && authorList.get(0).apiUrl.length > 0)
                         mDb?.newsDao()?.deleteNewsAuthors(favNews.tags[0])
                     mDb?.newsDao()?.deleteNews(favNews)
                     val h = Handler(getMainLooper())
