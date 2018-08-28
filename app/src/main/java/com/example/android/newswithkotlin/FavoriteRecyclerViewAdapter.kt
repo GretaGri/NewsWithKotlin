@@ -1,18 +1,21 @@
 package com.example.android.newswithkotlin
 
+
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import com.example.android.newswithkotlin.database.AppDatabase
-import com.example.android.newswithkotlin.database.ContributorContent
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
-class RecyclerViewAdapter(val items: ArrayList<News>,
-                          val context: Context) : RecyclerView.Adapter<RecyclerViewAdapter.MyListViewHolder>() {
+
+class FavoriteRecyclerViewAdapter(val items: ArrayList<News>,
+                                  val context: Context) : RecyclerView.Adapter<FavoriteRecyclerViewAdapter.MyListViewHolder>() {
 
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
         holder.bindList(items[position], context)
@@ -30,58 +33,48 @@ class RecyclerViewAdapter(val items: ArrayList<News>,
 
     open class MyListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        companion object {
-            // Extra for the task ID to be received in the intent
-            val EXTRA_TASK_ID = "extraTaskId"
-            // Extra for the task ID to be received after rotation
-            val INSTANCE_TASK_ID = "instanceTaskId"
-        }
-
-
-        // Constant for default task id to be used when not in update mode
-        val DEFAULT_TASK_ID = -1
-        var mTaskId = DEFAULT_TASK_ID
-
         // Create AppDatabase member variable for the Database
         // Member variable for the Database
         private var mDb: AppDatabase? = null
-
-
         // Holds the TextView that will add each item to recyclerView
         val textViewNewsTitle = view.text_view_title
         val textViewAuthorTitle = view.text_view_author
         val textViewNewsWebUrl = view.text_view_web_url
         val favButton: ImageButton = view.fav_image_button
+
         fun bindList(item: News, context: Context) {
             mDb = AppDatabase.getInstance(context)
             textViewNewsTitle?.text = item.title
-
             //need to handle author's part as it's not getting initialized properly
             if (item.tags.size > 0) {
                 textViewAuthorTitle?.text = item.tags[0].title
             } else {
                 AppExecutors.instance.diskIO.execute(Runnable {
                     for (author in (mDb?.newsDao()?.getAuthorsForNews(item.id)!!)) {
-
                         if (!((mDb?.newsDao()?.getAuthorsForNews(item.id)!!).isEmpty())) {
-                            textViewAuthorTitle?.text = (mDb?.newsDao()?.getAuthorsForNews(item.id)!!).get(0).title
+                            val title = (mDb?.newsDao()?.getAuthorsForNews(item.id)!!).get(0).title
+                            val h = Handler(Looper.getMainLooper())
+                            h.post(Runnable {
+                                textViewAuthorTitle?.text = title
+                            })
                         }
                     }
                 })
             }
             textViewNewsWebUrl?.text = item.webUrl
-
+            favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
             favButton.setOnClickListener { view ->
-                saveNews(item, item.tags)
+                deleteNewsFromDatabase(item)
             }
         }
 
-        private fun saveNews(item: News, authors: ArrayList<ContributorContent>) {
+        private fun deleteNewsFromDatabase(item: News) {
             AppExecutors.instance.diskIO.execute(Runnable {
-                //add the news and the author setails to the database on fav click
-                mDb?.newsDao()?.insertNews(item)
-                if (authors.size > 0)
-                    mDb?.newsDao()?.insertAuthorsForNews(authors.get(0))
+                mDb?.newsDao()?.deleteNews(item)
+                val h = Handler(Looper.getMainLooper())
+                h.post(Runnable {
+                    favButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
+                })
             })
         }
     }

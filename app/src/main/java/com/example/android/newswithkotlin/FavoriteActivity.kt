@@ -1,7 +1,5 @@
 package com.example.android.newswithkotlin
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,17 +8,22 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
+import com.example.android.newswithkotlin.GetFavoriteNewsFromDatabaseFragment.FavoriteNewsFetchingRequestListener
 import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.main_layout.*
 
-class FavoriteActivity : AppCompatActivity() {
+class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListener {
 
+    override fun onNewsFetchCallMade(newsList: ArrayList<News>) {
+        setupRecyclerView(this@FavoriteActivity, newsList)
+    }
 
     private var mDb: AppDatabase? = null
     lateinit var recyclerView: RecyclerView
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,26 +54,20 @@ class FavoriteActivity : AppCompatActivity() {
 
         //setup recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = RecyclerViewAdapter(ArrayList<News>(), this)
-        setupViewModel()
+        recyclerView.adapter = FavoriteRecyclerViewAdapter(ArrayList<News>(), this)
+        handleDatabase()
     }
 
-    private fun setupViewModel() {
-        val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
-        viewModel.newses.observe(this, object : Observer<List<News>> {
-            override fun onChanged(newsEntries: List<News>?) {
-                setupRecyclerView(this@FavoriteActivity, newsEntries!!)
-            }
-        })
-    }
-
-    fun setupRecyclerView(context: Context, listOfNews: List<News>) {
+    fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {
         recyclerView.visibility = View.VISIBLE
-        val arrayListOfNews: ArrayList<News> = ArrayList()
+        recyclerView.adapter = FavoriteRecyclerViewAdapter(listOfNews, context)
+    }
 
-        for (item in listOfNews) {
-            arrayListOfNews.add(item)
-        }
-        recyclerView.adapter = RecyclerViewAdapter(arrayListOfNews, context)
+    private fun handleDatabase() {
+        val searchDatabaseFragment = GetFavoriteNewsFromDatabaseFragment()
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.favorite_search_fragment, searchDatabaseFragment)
+                .commit()
     }
 }

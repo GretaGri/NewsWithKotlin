@@ -26,20 +26,21 @@ data class GsonNewsResults(
 //main news content
 //UNIQUE field referenced from: https://stackoverflow.com/a/48736187
 @Entity(tableName = "newstable",
-        indices = arrayOf(Index(value = "webUrl", unique = true)))
+        indices = arrayOf(Index(value = ["webUrl", "title"], unique = true)))
 @Parcelize
 data class News(
         @Expose
         @SerializedName("webTitle")
         var title: String = "webTitle",
+
         @Expose
         @SerializedName("webUrl")
         var webUrl: String = "webUrl",
         /*to exclude this field from being parsed/serialized and desrialized,
         we can ignore by setting these annotations to false
         */
-        @Expose(deserialize = false, serialize = false)
         @PrimaryKey(autoGenerate = true)
+        @Expose(deserialize = false, serialize = false)
         var id: Int = 0,
 
         @Expose
@@ -66,7 +67,7 @@ data class ContributorContent(
         var idContributor: Int = 0,
         @Expose
         @SerializedName("webTitle")
-        var title: String = "webTitle",
+        var title: String = "No news title found",
         @Expose
-        @SerializedName("apiUrl")
+        @SerializedName("")
         var apiUrl: String = "apiUrl") : Parcelable
