@@ -70,4 +70,4 @@ data class ContributorContent(
         var title: String = "No news title found",
         @Expose
         @SerializedName("")
-        var apiUrl: String = "apiUrl") : Parcelable
+        var apiUrl: String = "") : Parcelable

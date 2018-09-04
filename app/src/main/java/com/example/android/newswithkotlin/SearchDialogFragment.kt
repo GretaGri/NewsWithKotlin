@@ -30,7 +30,12 @@ class SearchDialogFragment : DialogFragment() {
 
         val searchView: SearchView = view.findViewById(R.id.search_view)
         searchView.setQueryHint(getString(R.string.search_hint))
-
+        /*
+        expand searchView as soon as the it's instantiated>
+        Source: @Link: https://stackoverflow.com/a/11710098
+        */
+        searchView.setIconifiedByDefault(false)
+        //set textListener to serachView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {

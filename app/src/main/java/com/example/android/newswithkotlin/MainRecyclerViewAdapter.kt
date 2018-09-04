@@ -14,7 +14,7 @@ import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
 
-class MainRecyclerViewAdapter(var items: ArrayList<News>,
+class MainRecyclerViewAdapter(val items: ArrayList<News>,
                               val context: Context,
                               var favNewsList: ArrayList<News>) :
         RecyclerView.Adapter<MainRecyclerViewAdapter.MyListViewHolder>() {
@@ -22,7 +22,6 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
         holder.bindList(items[position], context, favNewsList)
     }
-
 
     // Inflates the item views
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyListViewHolder {
@@ -49,6 +48,7 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
         fun bindList(item: News, context: Context, favNewsFromDatabase: ArrayList<News>) {
             mDb = AppDatabase.getInstance(context)
             textViewNewsTitle?.text = item.title
+
 
             //need to handle author's part as it's not getting initialized properly
             if (item.tags.size > 0) {
@@ -80,7 +80,11 @@ class MainRecyclerViewAdapter(var items: ArrayList<News>,
         private fun saveOrDeleteNews(item: News, isFav: Boolean, favNews: News, imgButton: ImageButton, authorList: ArrayList<ContributorContent>) {
             if (isFav) {
                 AppExecutors.instance.diskIO.execute(Runnable {
-                    if (authorList.size > 0)
+                    /*greta's suggestion to handle authors NPE
+                    if (authorList.size > 0 && favNews.tags.size > 0)
+                        mDb?.newsDao()?.deleteNewsAuthors(favNews.tags[0])
+                    */
+                    if (authorList.size > 0 && authorList.get(0).apiUrl.length > 0)
                         mDb?.newsDao()?.deleteNewsAuthors(favNews.tags[0])
                     mDb?.newsDao()?.deleteNews(favNews)
                     val h = Handler(getMainLooper())

@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -139,7 +138,6 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             else -> super.onOptionsItemSelected(item)
         }
     }
-
     private fun launchIntent(context: Context) {
         //start new intent on fav click
         val favIntent = Intent(context, FavoriteActivity::class.java)
@@ -150,7 +148,6 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         val viewModel = ViewModelProviders.of(this).get(AllNewsViewModel::class.java)
         viewModel.newses.observe(this, object : Observer<List<News>?> {
             override fun onChanged(t: List<News>?) {
-                Log.v("my_tag", "onChanged called")
                 val arrayListOfNewFromListOfNews = ArrayList<News>()
                 for (news in t!!) {
                     arrayListOfNewFromListOfNews.add(news)
