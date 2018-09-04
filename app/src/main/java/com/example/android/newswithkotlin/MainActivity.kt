@@ -138,7 +138,6 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             else -> super.onOptionsItemSelected(item)
         }
     }
-
     private fun launchIntent(context: Context) {
         //start new intent on fav click
         val favIntent = Intent(context, FavoriteActivity::class.java)
