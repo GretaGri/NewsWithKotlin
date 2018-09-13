@@ -1,8 +1,10 @@
 package com.example.android.newswithkotlin
 
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper.getMainLooper
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +47,13 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
         val textViewAuthorTitle = view.text_view_author
         val textViewNewsWebUrl = view.text_view_web_url
         val favButton: ImageButton = view.fav_image_button
-        fun bindList(item: News, context: Context, favNewsFromDatabase: ArrayList<News>) {
+
+        //handle news details
+        val newsListItem: ConstraintLayout = view.news_list_item
+
+        fun bindList(item: News,
+                     context: Context,
+                     favNewsFromDatabase: ArrayList<News>) {
             mDb = AppDatabase.getInstance(context)
             textViewNewsTitle?.text = item.title
 
@@ -74,6 +82,17 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
                 saveOrDeleteNews(item, isFav, favNews, favButton, item.tags)
             }
             textViewNewsWebUrl?.text = item.webUrl
+
+            newsListItem.setOnClickListener { view ->
+                setupNewsDetailsActivity(context, item.webUrl, item.title)
+            }
+        }
+
+        private fun setupNewsDetailsActivity(context: Context, itemUrl: String, itemTitle: String) {
+            val newsDetailsActivity = Intent(context, NewsDetailsActivity::class.java)
+            newsDetailsActivity.putExtra("newsUrl", itemUrl)
+            newsDetailsActivity.putExtra("newsTitle", itemTitle)
+            context.startActivity(newsDetailsActivity)
 
         }
 

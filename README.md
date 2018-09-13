@@ -11,5 +11,11 @@ ____________________________________________________________
 - [X] Gson
 - [X] ConstraintLayout
 - [X] Loaders
-- [ ] Notifucations
+- [ ] Notifications
 - [ ] Firebase JobDispatcher
+- [ ] WebView for news details
+
+RESOURCES
+_____________________________________________________________
+
+
