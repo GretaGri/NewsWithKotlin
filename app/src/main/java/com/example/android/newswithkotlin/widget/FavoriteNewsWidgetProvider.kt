@@ -1,4 +1,4 @@
-package com.example.android.newswithkotlin
+package com.example.android.newswithkotlin.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -8,10 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
+import com.example.android.newswithkotlin.R
+import com.example.android.newswithkotlin.database.News
 
 
 class FavoriteNewsWidgetProvider : AppWidgetProvider() {
 
+    private lateinit var newsList: ArrayList<News>
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager,
                           appWidgetIds: IntArray) {
 
@@ -21,13 +24,13 @@ class FavoriteNewsWidgetProvider : AppWidgetProvider() {
         val allWidgetIds = appWidgetManager.getAppWidgetIds(favoriteWidget)
         for (widgetId in allWidgetIds) {
             // create some random data
-            val dummyData = "This is some dummy data"
+            val widgetTitle = "This is favorite widget"
 
             val remoteViews = RemoteViews(context.getPackageName(),
                     R.layout.widget_layout)
-            Log.v(TAG, dummyData)
+            Log.v(TAG, widgetTitle)
             // Set the text
-            remoteViews.setTextViewText(R.id.update, dummyData)
+            remoteViews.setTextViewText(R.id.widget_title_text_view, widgetTitle)
 
             // Add an onClickListener on widget to perform some action
             val intent = Intent(context, FavoriteNewsWidgetProvider::class.java)
@@ -35,11 +38,29 @@ class FavoriteNewsWidgetProvider : AppWidgetProvider() {
             intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
 
+
+            intent.putParcelableArrayListExtra("newsList", newsList)
+            Log.d("my_tag", "newsList size inside onUpdate is: " + newsList.size)
             val pendingIntent = PendingIntent.getBroadcast(context,
                     0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            remoteViews.setOnClickPendingIntent(R.id.update, pendingIntent)
+            remoteViews.setOnClickPendingIntent(R.id.widget_title_text_view, pendingIntent)
             appWidgetManager.updateAppWidget(widgetId, remoteViews)
         }
+    }
+
+
+    override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action
+        if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
+            // refresh all your widgets
+            val mgr = AppWidgetManager.getInstance(context)
+            val cn = ComponentName(context, FavoriteNewsWidgetProvider::class.java)
+            //get newsFromFavoriteActivity and pass to remote factory
+            newsList = intent.getParcelableArrayListExtra<News>("newsList")
+            Log.d("my_tag", "newsList size inside onReceive is: " + newsList.size)
+            mgr.notifyAppWidgetViewDataChanged(mgr.getAppWidgetIds(cn), R.id.widget_list_view)
+        }
+        super.onReceive(context, intent)
     }
 
     companion object {

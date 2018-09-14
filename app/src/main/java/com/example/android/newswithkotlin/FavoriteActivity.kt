@@ -1,22 +1,28 @@
 package com.example.android.newswithkotlin
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.example.android.newswithkotlin.GetFavoriteNewsFromDatabaseFragment.FavoriteNewsFetchingRequestListener
 import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
+import com.example.android.newswithkotlin.widget.FavoriteNewsWidgetProvider
 import kotlinx.android.synthetic.main.main_layout.*
 
 class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListener {
 
     override fun onNewsFetchCallMade(newsList: ArrayList<News>) {
         setupRecyclerView(this@FavoriteActivity, newsList)
+        sendRefreshBroadcast(this@FavoriteActivity, newsList)
     }
 
     private var mDb: AppDatabase? = null
@@ -56,6 +62,14 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = FavoriteRecyclerViewAdapter(ArrayList<News>(), this)
         handleDatabase()
+    }
+
+    fun sendRefreshBroadcast(context: Context, newsList: ArrayList<News>) {
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+        intent.component = ComponentName(context, FavoriteNewsWidgetProvider::class.java)
+        Log.v("my_tag", "while calling broadcast, size is: " + newsList.size)
+        intent.putParcelableArrayListExtra("newsList", newsList)
+        context.sendBroadcast(intent)
     }
 
     fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {
