@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/no_news"
     android:orientation="vertical">
 
     <FrameLayout
@@ -14,7 +13,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="This is some dummy text"
-
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
             android:textSize="18sp" />
@@ -22,13 +20,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#ff0033">
 
         <ListView
             android:id="@+id/widget_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackground"
             android:divider="#eeeeee"
             android:dividerHeight="1dp"
             tools:listitem="@layout/widget_layout" />
