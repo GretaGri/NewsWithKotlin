@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.example.android.newswithkotlin.GetFavoriteNewsFromDatabaseFragment.FavoriteNewsFetchingRequestListener
@@ -67,6 +68,9 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
         val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
         intent.component = ComponentName(context, FavoriteNewsWidgetProvider::class.java)
         intent.putParcelableArrayListExtra("newsList", newsList)
+        val appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, FavoriteNewsWidgetProvider::class.java))
+        Log.v("my_tag", "allWidgetIds2x2 size: " + appWidgetIds.size)
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
         context.sendBroadcast(intent)
     }
 

@@ -45,7 +45,6 @@ class FavoriteNewsWidgetProvider : AppWidgetProvider() {
             intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
 
-
             intent.putParcelableArrayListExtra("newsList", newsList)
             Log.d("my_tag", "newsList size inside onUpdate is: " + newsList.size)
             val pendingIntent = PendingIntent.getBroadcast(context,
@@ -62,12 +61,10 @@ class FavoriteNewsWidgetProvider : AppWidgetProvider() {
         val action = intent.action
         if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
             // refresh all your widgets
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val componentName = ComponentName(context, FavoriteNewsWidgetProvider::class.java)
             //get newsFromFavoriteActivity and pass to remote factory
             newsList = intent.getParcelableArrayListExtra<News>("newsList")
-            Log.d("my_tag", "getAppWidgetIds(cn) size inside onReceive is: " + appWidgetManager.getAppWidgetIds(componentName).size)
-            this.onUpdate(context, AppWidgetManager.getInstance(context), appWidgetManager.getAppWidgetIds(componentName));
+            Log.d("my_tag", "getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS) size inside onReceive is: " + intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS).size)
+            this.onUpdate(context, AppWidgetManager.getInstance(context), intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS));
         }
         super.onReceive(context, intent)
     }
