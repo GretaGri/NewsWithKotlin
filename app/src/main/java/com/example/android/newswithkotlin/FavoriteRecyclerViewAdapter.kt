@@ -49,17 +49,17 @@ class FavoriteRecyclerViewAdapter(val items: ArrayList<News>,
             if (item.tags.size > 0) {
                 textViewAuthorTitle?.text = item.tags[0].title
             } else {
-                AppExecutors.instance.diskIO.execute(Runnable {
+                AppExecutors.instance.diskIO.execute {
                     for (author in (mDb?.newsDao()?.getAuthorsForNews(item.id)!!)) {
                         if (!((mDb?.newsDao()?.getAuthorsForNews(item.id)!!).isEmpty())) {
                             val title = (mDb?.newsDao()?.getAuthorsForNews(item.id)!!).get(0).title
                             val h = Handler(Looper.getMainLooper())
-                            h.post(Runnable {
+                            h.post {
                                 textViewAuthorTitle?.text = title
-                            })
+                            }
                         }
                     }
-                })
+                }
             }
             textViewNewsWebUrl?.text = item.webUrl
             favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
@@ -69,13 +69,13 @@ class FavoriteRecyclerViewAdapter(val items: ArrayList<News>,
         }
 
         private fun deleteNewsFromDatabase(item: News) {
-            AppExecutors.instance.diskIO.execute(Runnable {
+            AppExecutors.instance.diskIO.execute {
                 mDb?.newsDao()?.deleteNews(item)
                 val h = Handler(Looper.getMainLooper())
-                h.post(Runnable {
+                h.post {
                     favButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
-                })
-            })
+                }
+            }
         }
     }
 }

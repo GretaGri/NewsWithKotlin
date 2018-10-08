@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.example.android.newswithkotlin.GetFavoriteNewsFromDatabaseFragment.FavoriteNewsFetchingRequestListener
@@ -67,7 +66,6 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
     fun sendRefreshBroadcast(context: Context, newsList: ArrayList<News>) {
         val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
         intent.component = ComponentName(context, FavoriteNewsWidgetProvider::class.java)
-        Log.v("my_tag", "while calling broadcast, size is: " + newsList.size)
         intent.putParcelableArrayListExtra("newsList", newsList)
         context.sendBroadcast(intent)
     }

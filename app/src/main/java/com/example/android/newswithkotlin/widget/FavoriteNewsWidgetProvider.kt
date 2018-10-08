@@ -15,13 +15,20 @@ import com.example.android.newswithkotlin.database.News
 class FavoriteNewsWidgetProvider : AppWidgetProvider() {
 
     private lateinit var newsList: ArrayList<News>
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager,
                           appWidgetIds: IntArray) {
+        Log.d("my_tag", "onUpdate called")
+
 
         // Get all ids
         val favoriteWidget = ComponentName(context,
                 FavoriteNewsWidgetProvider::class.java)
         val allWidgetIds = appWidgetManager.getAppWidgetIds(favoriteWidget)
+
+
+        Log.v("my_tag", "appWidgetIds size is: " + allWidgetIds.size)
+
         for (widgetId in allWidgetIds) {
             // create some random data
             val widgetTitle = "This is favorite widget"
@@ -46,25 +53,28 @@ class FavoriteNewsWidgetProvider : AppWidgetProvider() {
             remoteViews.setOnClickPendingIntent(R.id.widget_title_text_view, pendingIntent)
             appWidgetManager.updateAppWidget(widgetId, remoteViews)
         }
+
     }
 
 
     override fun onReceive(context: Context, intent: Intent) {
+        Log.d("my_tag", "onReceive called")
         val action = intent.action
         if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
             // refresh all your widgets
-            val mgr = AppWidgetManager.getInstance(context)
-            val cn = ComponentName(context, FavoriteNewsWidgetProvider::class.java)
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val componentName = ComponentName(context, FavoriteNewsWidgetProvider::class.java)
             //get newsFromFavoriteActivity and pass to remote factory
             newsList = intent.getParcelableArrayListExtra<News>("newsList")
-            Log.d("my_tag", "newsList size inside onReceive is: " + newsList.size)
-            mgr.notifyAppWidgetViewDataChanged(mgr.getAppWidgetIds(cn), R.id.widget_list_view)
+            Log.d("my_tag", "getAppWidgetIds(cn) size inside onReceive is: " + appWidgetManager.getAppWidgetIds(componentName).size)
+            this.onUpdate(context, AppWidgetManager.getInstance(context), appWidgetManager.getAppWidgetIds(componentName));
         }
         super.onReceive(context, intent)
     }
 
     companion object {
 
-        private val TAG = FavoriteNewsWidgetProvider::class.java.simpleName
+        //private val TAG = FavoriteNewsWidgetProvider::class.java.simpleName
+        private val TAG = "my_tag"
     }
 }

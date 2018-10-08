@@ -19,7 +19,7 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
     }
 
     override fun onCreate() {
-        Log.d("my_tag", "factory called")
+        Log.d("my_tag", "FavoriteWidgetRemoteViewsFactory onCreate called")
         Log.d("my_tag", "factory size is: " + mFavouriteNewsWidgetArrayList.size)
         mFavouriteNewsWidgetArrayList = newsList
     }
@@ -72,6 +72,7 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
 
     companion object {
 
-        private val TAG = FavoriteWidgetRemoteViewsFactory::class.java.simpleName
+        //private val TAG = FavoriteWidgetRemoteViewsFactory::class.java.simpleName
+        private val TAG = "my_tag"
     }
 }
