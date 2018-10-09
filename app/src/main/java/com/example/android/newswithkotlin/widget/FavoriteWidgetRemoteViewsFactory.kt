@@ -1,50 +1,44 @@
 package com.example.android.newswithkotlin.widget
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import com.example.android.newswithkotlin.DummyData
 import com.example.android.newswithkotlin.R
-import java.util.*
-import kotlin.collections.ArrayList
+import com.example.android.newswithkotlin.database.AppDatabase
+import com.example.android.newswithkotlin.database.News
+import org.jetbrains.anko.doAsync
 
 
 class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
-                                       var newsList: ArrayList<DummyData>? = null) : RemoteViewsService.RemoteViewsFactory {
+                                       var newsList: ArrayList<News>? = null) : RemoteViewsService.RemoteViewsFactory {
 
-    lateinit var mFavouriteNewsWidgetArrayList: ArrayList<DummyData>
+    lateinit var mFavouriteNewsWidgetArrayList: ArrayList<News>
+    private var mDb: AppDatabase? = null
 
     init {
         Log.d(TAG, "Context : $mContext")
     }
 
     override fun onCreate() {
+        mDb = AppDatabase.getInstance(mContext)
         mFavouriteNewsWidgetArrayList = ArrayList()
         Log.d("my_tag", "FavoriteWidgetRemoteViewsFactory onCreate called")
-        mFavouriteNewsWidgetArrayList = getDummyData()
+        getDummyData()
     }
 
-    private fun getDummyData(): ArrayList<DummyData> {
-        val setting = mContext.getSharedPreferences("id", Context.MODE_PRIVATE)
-        val id = setting.getInt("id", 1)
-
-        var currentValue = 0
-        val newsListAdded = ArrayList<DummyData>()
-        while (currentValue <= id) {
-            val random = Random()
-            val randomNum = random.nextInt(2) + 50
-            val dummyData = DummyData(randomNum)
-            newsListAdded.add(dummyData)
-            currentValue = currentValue + 1
+    private fun getDummyData() {
+        newsList = ArrayList()
+        doAsync {
+            val result = mDb?.newsDao()?.loadAllNewsArrayListFromDatabase() as ArrayList<News>
+            val mHandler = Handler(Looper.getMainLooper())
+            mHandler.post {
+                newsList = result
+            }
         }
-        val settings: SharedPreferences = mContext.getSharedPreferences("id", Context.MODE_PRIVATE);
-        val editor: SharedPreferences.Editor = settings.edit();
-        editor.putInt("id", newsListAdded.size + 1);
-        editor.commit()
-        this.onDataSetChanged()
-        return newsListAdded
+        Log.d("my_tag", "newsList size inside app executor is: " + newsList!!.size)
     }
 
     override fun onDataSetChanged() {
@@ -63,9 +57,9 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
 
     override fun getViewAt(position: Int): RemoteViews {
         val remoteViews = RemoteViews(mContext.packageName,
-                R.layout.widget_layout)
+                R.layout.widget_list_item)
         val favoriteNews = mFavouriteNewsWidgetArrayList[position]
-        remoteViews.setTextViewText(R.id.news_title_widget_text_view, "id is: " + favoriteNews.id)
+        remoteViews.setTextViewText(R.id.news_title_widget_text_view, "id is: " + favoriteNews.title)
         Log.d(TAG, "getViewAt setTextViewText : " + favoriteNews.id)
         return remoteViews
     }

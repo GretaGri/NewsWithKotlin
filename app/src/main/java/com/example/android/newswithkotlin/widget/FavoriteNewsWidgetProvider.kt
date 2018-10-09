@@ -18,7 +18,6 @@ class FavoriteNewsWidgetProvider : AppWidgetProvider() {
                 FavoriteNewsWidgetProvider::class.java)
         val allWidgetIds = appWidgetManager.getAppWidgetIds(favoriteWidget)
         for (widgetId in allWidgetIds) {
-            // create some random data
             val remoteViews = RemoteViews(context.getPackageName(),
                     R.layout.widget_layout)
             val serviceIntent = Intent(context, MyWidgetRemoteViewsService::class.java)
