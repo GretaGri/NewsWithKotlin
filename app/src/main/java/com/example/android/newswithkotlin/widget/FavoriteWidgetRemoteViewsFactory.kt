@@ -1,8 +1,6 @@
 package com.example.android.newswithkotlin.widget
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
@@ -10,6 +8,7 @@ import com.example.android.newswithkotlin.R
 import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 
 class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
@@ -33,16 +32,18 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
         newsList = ArrayList()
         doAsync {
             val result = mDb?.newsDao()?.loadAllNewsArrayListFromDatabase() as ArrayList<News>
-            val mHandler = Handler(Looper.getMainLooper())
-            mHandler.post {
-                newsList = result
+            Log.d("my_tag", "newsList size inside appExecutor is: " + mFavouriteNewsWidgetArrayList!!.size)
+            uiThread {
+                mFavouriteNewsWidgetArrayList = result
+                Log.d("my_tag", "newsList size inside uiThread is: " + mFavouriteNewsWidgetArrayList!!.size)
             }
+            onDataSetChanged()
         }
-        Log.d("my_tag", "newsList size inside app executor is: " + newsList!!.size)
+
     }
 
     override fun onDataSetChanged() {
-
+        Log.d("my_tag", "newsList size inside onDataSetChanged is: " + newsList!!.size)
     }
 
     override fun onDestroy() {
@@ -50,6 +51,7 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
     }
 
     override fun getCount(): Int {
+        Log.d("my_tag", "newsList size inside onDataSetChanged is: " + newsList!!.size)
         return if (mFavouriteNewsWidgetArrayList.isEmpty()) {
             0
         } else mFavouriteNewsWidgetArrayList.size
@@ -59,7 +61,7 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
         val remoteViews = RemoteViews(mContext.packageName,
                 R.layout.widget_list_item)
         val favoriteNews = mFavouriteNewsWidgetArrayList[position]
-        remoteViews.setTextViewText(R.id.news_title_widget_text_view, "id is: " + favoriteNews.title)
+        remoteViews.setTextViewText(R.id.news_title_widget_text_view, favoriteNews.title)
         Log.d(TAG, "getViewAt setTextViewText : " + favoriteNews.id)
         return remoteViews
     }

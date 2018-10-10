@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -66,18 +65,10 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
     }
 
     fun sendRefreshBroadcast(context: Context, newsList: ArrayList<News>) {
-
-        val settings: SharedPreferences = getSharedPreferences("token", Context.MODE_PRIVATE);
-        val editor: SharedPreferences.Editor = settings.edit();
-        editor.putInt("id", 1);
-        editor.commit()
-
         val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
         val appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, FavoriteNewsWidgetProvider::class.java))
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
         context.sendBroadcast(intent)
-
-
     }
 
     fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {

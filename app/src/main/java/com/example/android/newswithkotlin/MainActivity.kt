@@ -1,8 +1,10 @@
 package com.example.android.newswithkotlin
 
 import android.app.DialogFragment
+import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -18,6 +20,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.android.newswithkotlin.database.GsonNewsResponse
 import com.example.android.newswithkotlin.database.News
+import com.example.android.newswithkotlin.widget.FavoriteNewsWidgetProvider
 import kotlinx.android.synthetic.main.main_layout.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -139,6 +142,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     private fun launchIntent(context: Context) {
         //start new intent on fav click
         val favIntent = Intent(context, FavoriteActivity::class.java)
@@ -155,7 +159,15 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
                 }
                 newsFromDatabase = arrayListOfNewFromListOfNews
                 recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi, this@MainActivity, newsFromDatabase)
+                sendRefreshBroadcast(this@MainActivity)
             }
         })
+    }
+
+    fun sendRefreshBroadcast(context: Context) {
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+        val appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, FavoriteNewsWidgetProvider::class.java))
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+        context.sendBroadcast(intent)
     }
 }

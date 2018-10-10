@@ -12,8 +12,8 @@
         android:layout_gravity="center_vertical|center_horizontal"
         android:layout_margin="4dp"
         android:layout_weight="1"
-        android:gravity="start"
-        tools:text="dummy news title"
-        android:textColor="#000" />
+        android:gravity="center_horizontal"
+        android:textColor="#000"
+        tools:text="dummy news title" />
 
 </LinearLayout>
