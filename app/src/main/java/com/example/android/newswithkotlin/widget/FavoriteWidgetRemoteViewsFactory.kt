@@ -11,8 +11,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
 
-class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
-                                       var newsList: ArrayList<News>? = null) : RemoteViewsService.RemoteViewsFactory {
+class FavoriteWidgetRemoteViewsFactory(val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
 
     lateinit var mFavouriteNewsWidgetArrayList: ArrayList<News>
     private var mDb: AppDatabase? = null
@@ -25,17 +24,15 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
         mDb = AppDatabase.getInstance(mContext)
         mFavouriteNewsWidgetArrayList = ArrayList()
         Log.d("my_tag", "FavoriteWidgetRemoteViewsFactory onCreate called")
-        getDummyData()
+        getWidgetData()
     }
 
-    private fun getDummyData() {
-        newsList = ArrayList()
+    private fun getWidgetData() {
         doAsync {
             val result = mDb?.newsDao()?.loadAllNewsArrayListFromDatabase() as ArrayList<News>
-            Log.d("my_tag", "newsList size inside appExecutor is: " + mFavouriteNewsWidgetArrayList!!.size)
             uiThread {
                 mFavouriteNewsWidgetArrayList = result
-                Log.d("my_tag", "newsList size inside uiThread is: " + mFavouriteNewsWidgetArrayList!!.size)
+                Log.d("my_tag", "mFavouriteNewsWidgetArrayList size inside uiThread is: " + mFavouriteNewsWidgetArrayList.size)
             }
             onDataSetChanged()
         }
@@ -43,7 +40,7 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
     }
 
     override fun onDataSetChanged() {
-        Log.d("my_tag", "newsList size inside onDataSetChanged is: " + newsList!!.size)
+        Log.d("my_tag", "mFavouriteNewsWidgetArrayList size inside onDataSetChanged is: " + mFavouriteNewsWidgetArrayList!!.size)
     }
 
     override fun onDestroy() {
@@ -51,7 +48,6 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
     }
 
     override fun getCount(): Int {
-        Log.d("my_tag", "newsList size inside onDataSetChanged is: " + newsList!!.size)
         return if (mFavouriteNewsWidgetArrayList.isEmpty()) {
             0
         } else mFavouriteNewsWidgetArrayList.size
@@ -62,7 +58,7 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
                 R.layout.widget_list_item)
         val favoriteNews = mFavouriteNewsWidgetArrayList[position]
         remoteViews.setTextViewText(R.id.news_title_widget_text_view, favoriteNews.title)
-        Log.d(TAG, "getViewAt setTextViewText : " + favoriteNews.id)
+        Log.d(TAG, "getViewAt setTextViewText : " + favoriteNews.title)
         return remoteViews
     }
 
@@ -83,7 +79,6 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context,
     }
 
     companion object {
-        //private val TAG = FavoriteWidgetRemoteViewsFactory::class.java.simpleName
-        private val TAG = "my_tag"
+        private val TAG = FavoriteWidgetRemoteViewsFactory::class.java.simpleName
     }
 }

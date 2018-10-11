@@ -1,10 +1,8 @@
 package com.example.android.newswithkotlin
 
 import android.app.DialogFragment
-import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -20,7 +18,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.android.newswithkotlin.database.GsonNewsResponse
 import com.example.android.newswithkotlin.database.News
-import com.example.android.newswithkotlin.widget.FavoriteNewsWidgetProvider
+import com.example.android.newswithkotlin.widget.FetchWidgetDataFromBackgroundService
 import kotlinx.android.synthetic.main.main_layout.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,6 +35,7 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
 
     var newsFromApi = ArrayList<News>()
     var newsFromDatabase = ArrayList<News>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
@@ -115,11 +114,11 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             queriedForTextView.visibility = View.VISIBLE
             queriedForTextView.text = getString(R.string.search_queried_for, usersQuery)
             recyclerView.visibility = View.VISIBLE
-            runOnUiThread(Runnable() {
+            runOnUiThread {
                 run() {
                     recyclerView.adapter = MainRecyclerViewAdapter(listOfNews, context, newsFromDatabase)
                 }
-            })
+            }
 
         }
     }
@@ -159,15 +158,14 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
                 }
                 newsFromDatabase = arrayListOfNewFromListOfNews
                 recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi, this@MainActivity, newsFromDatabase)
-                sendRefreshBroadcast(this@MainActivity)
+
+                //start the service to fetch widget data
+                fetchWidgetDataInBackgroundService(this@MainActivity)
             }
         })
     }
 
-    fun sendRefreshBroadcast(context: Context) {
-        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-        val appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, FavoriteNewsWidgetProvider::class.java))
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
-        context.sendBroadcast(intent)
+    private fun fetchWidgetDataInBackgroundService(context: Context) {
+        context.startService(Intent(context, FetchWidgetDataFromBackgroundService::class.java))
     }
 }
