@@ -13,7 +13,8 @@ ____________________________________________________________
 - [X] Loaders
 - [ ] Notifications
 - [ ] Firebase JobDispatcher
-- [ ] WebView for news details
+- [X] WebView for news details
+- [X] Widget for favorite news
 
 RESOURCES
 _____________________________________________________________
