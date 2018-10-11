@@ -1,7 +1,5 @@
 package com.example.android.newswithkotlin
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +12,7 @@ import android.widget.TextView
 import com.example.android.newswithkotlin.GetFavoriteNewsFromDatabaseFragment.FavoriteNewsFetchingRequestListener
 import com.example.android.newswithkotlin.database.AppDatabase
 import com.example.android.newswithkotlin.database.News
-import com.example.android.newswithkotlin.widget.FavoriteNewsWidgetProvider
+import com.example.android.newswithkotlin.widget.FetchWidgetDataFromBackgroundService
 import kotlinx.android.synthetic.main.main_layout.*
 import java.util.*
 
@@ -22,7 +20,12 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
 
     override fun onNewsFetchCallMade(newsList: ArrayList<News>) {
         setupRecyclerView(this@FavoriteActivity, newsList)
-        sendRefreshBroadcast(this@FavoriteActivity, newsList)
+        //start the service to fetch widget data
+        fetchDataInBackgroundService(this@FavoriteActivity)
+    }
+
+    private fun fetchDataInBackgroundService(context: Context) {
+        context.startService(Intent(context, FetchWidgetDataFromBackgroundService::class.java))
     }
 
     private var mDb: AppDatabase? = null
@@ -62,13 +65,6 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = FavoriteRecyclerViewAdapter(ArrayList<News>(), this)
         handleDatabase()
-    }
-
-    fun sendRefreshBroadcast(context: Context, newsList: ArrayList<News>) {
-        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-        val appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, FavoriteNewsWidgetProvider::class.java))
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
-        context.sendBroadcast(intent)
     }
 
     fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {

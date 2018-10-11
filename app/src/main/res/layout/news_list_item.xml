@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_small"
     android:id="@+id/news_list_item"
+    android:layout_gravity="top"
     android:background="@color/colorBackground">
 
     <TextView
