@@ -36,6 +36,7 @@
         <activity
             android:name=".NewsDetailsActivity"
             android:parentActivityName=".MainActivity" />
+        <activity android:name=".SettingsActivity" />
 
         <receiver android:name=".widget.FavoriteNewsWidgetProvider">
             <intent-filter>

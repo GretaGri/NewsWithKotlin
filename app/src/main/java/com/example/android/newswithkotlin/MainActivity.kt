@@ -5,9 +5,11 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -25,7 +27,37 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener {
+class MainActivity : AppCompatActivity(),
+        SearchDialogFragment.userQueryListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+
+        if (key!!.contains(getString(R.string.pref_checkbox_key))) {
+            val checkBoxStatus = sharedPreferences?.getBoolean(getString(R.string.pref_checkbox_key),
+                    resources.getBoolean(R.bool.pref_show_checkbox_default))
+
+            if (checkBoxStatus!!) {
+                startBackgroundServiceToFetchNewsAndShowNotification()
+            } else {
+                stopBackgroundServiceToFetchNewsAndShowNotification()
+            }
+        }
+    }
+
+    private fun stopBackgroundServiceToFetchNewsAndShowNotification() {
+
+    }
+
+    private fun startBackgroundServiceToFetchNewsAndShowNotification() {
+
+    }
+
+    //un-register the sharedPreferenceListener
+    override fun onDestroy() {
+        super.onDestroy()
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+    }
 
     // declare recyclerView instance with lateinit so that it can be handled without any NPE
     lateinit var recyclerView: RecyclerView
@@ -58,6 +90,16 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
             showDialogFragment()
         }
         setupViewModel()
+        setupSharedPreferences()
+    }
+
+    private fun setupSharedPreferences() {
+        // Get all of the values from shared preferences to set it up
+        // Get a reference to the default shared preferences from the PreferenceManager class
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        //register the sharedPreferenceListener
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+
     }
 
     private fun showDialogFragment() {
@@ -134,9 +176,14 @@ class MainActivity : AppCompatActivity(), SearchDialogFragment.userQueryListener
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> {
+            R.id.action_favorite -> {
                 launchIntent(this)
                 true
+            }
+            R.id.action_settings -> {
+                val settingsActivity = Intent(this@MainActivity, SettingsActivity::class.java)
+                startActivity(settingsActivity);
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
