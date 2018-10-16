@@ -1,6 +1,8 @@
 package com.example.android.newswithkotlin
 
+import android.app.AlarmManager
 import android.app.DialogFragment
+import android.app.PendingIntent
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -13,6 +15,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,18 +28,18 @@ import kotlinx.android.synthetic.main.main_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 class MainActivity : AppCompatActivity(),
-        SearchDialogFragment.userQueryListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SearchDialogFragment.UserQueryListener,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        FetchNewsFromApiService.GetNewsList {
+
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-
         if (key!!.contains(getString(R.string.pref_checkbox_key))) {
             val checkBoxStatus = sharedPreferences?.getBoolean(getString(R.string.pref_checkbox_key),
                     resources.getBoolean(R.bool.pref_show_checkbox_default))
-
+            Log.v("my_tag", "checkbox checked is: " + checkBoxStatus)
             if (checkBoxStatus!!) {
                 startBackgroundServiceToFetchNewsAndShowNotification()
             } else {
@@ -46,11 +49,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun stopBackgroundServiceToFetchNewsAndShowNotification() {
-
+        manager?.cancel(alarmApiCallPendingIntent)
     }
 
     private fun startBackgroundServiceToFetchNewsAndShowNotification() {
-
+        manager?.set(AlarmManager.RTC, System.currentTimeMillis(), alarmApiCallPendingIntent)
     }
 
     //un-register the sharedPreferenceListener
@@ -67,6 +70,10 @@ class MainActivity : AppCompatActivity(),
 
     var newsFromApi = ArrayList<News>()
     var newsFromDatabase = ArrayList<News>()
+
+    //handle background news fetching
+    var alarmApiCallPendingIntent: PendingIntent? = null
+    var manager: AlarmManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +97,10 @@ class MainActivity : AppCompatActivity(),
             showDialogFragment()
         }
         setupViewModel()
+        //handle background news fetch mechanism
+        val alarmApiCallIntent = Intent(this, AlarmApiCallReceiver::class.java)
+        alarmApiCallPendingIntent = PendingIntent.getBroadcast(this, 0, alarmApiCallIntent, 0)
+        manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         setupSharedPreferences()
     }
 
@@ -107,14 +118,6 @@ class MainActivity : AppCompatActivity(),
         val searchDialogFragment = SearchDialogFragment() as DialogFragment
         val ft = fragmentManager
         searchDialogFragment.show(ft, "dialog")
-    }
-
-    override fun someEvent(usersQuery: String) {
-        if (internetIsActive()) {
-            fetchDataFromGuardianUsingRetrofit(usersQuery)
-        } else {
-            emptyView.text = getString(R.string.internet_not_connected)
-        }
     }
 
     private fun internetIsActive(): Boolean {
@@ -177,7 +180,7 @@ class MainActivity : AppCompatActivity(),
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_favorite -> {
-                launchIntent(this)
+                launchFavoriteIntent(this)
                 true
             }
             R.id.action_settings -> {
@@ -189,7 +192,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun launchIntent(context: Context) {
+    private fun launchFavoriteIntent(context: Context) {
         //start new intent on fav click
         val favIntent = Intent(context, FavoriteActivity::class.java)
         context.startActivity(favIntent)
@@ -214,5 +217,18 @@ class MainActivity : AppCompatActivity(),
 
     private fun fetchWidgetDataInBackgroundService(context: Context) {
         context.startService(Intent(context, FetchWidgetDataFromBackgroundService::class.java))
+    }
+
+    override fun userAddedSearchParameter(usersQuery: String) {
+        if (internetIsActive()) {
+            fetchDataFromGuardianUsingRetrofit(usersQuery)
+        } else {
+            emptyView.text = getString(R.string.internet_not_connected)
+        }
+    }
+
+    override fun onNewsFetched(newsList: ArrayList<News>) {
+        Log.d("my_tag", "fetched news size inside onNewsFetched is: " + newsFromApi.size)
+        recyclerView.adapter = MainRecyclerViewAdapter(newsList, this, newsFromDatabase)
     }
 }
