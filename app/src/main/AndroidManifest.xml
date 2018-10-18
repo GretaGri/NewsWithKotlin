@@ -36,6 +36,11 @@
         <activity
             android:name=".NewsDetailsActivity"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/label_settings"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
 
         <receiver android:name=".widget.FavoriteNewsWidgetProvider">
             <intent-filter>
@@ -45,10 +50,13 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
+        <receiver android:name=".AlarmApiCallReceiver" />
+
         <service
             android:name=".widget.MyWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service android:name=".widget.FetchWidgetDataFromBackgroundService" />
+        <service android:name=".FetchNewsFromApiService" />
     </application>
 
 </manifest>

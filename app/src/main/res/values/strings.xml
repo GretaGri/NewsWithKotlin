@@ -8,4 +8,13 @@
     <string name="loading_news">Loading news. Please wait...</string>
     <string name="search_hint">What news you\'d like to search for</string>
     <string name="search_queried_for">You searched for: %1$s</string>
+    <string name="action_favorite">Favorite</string>
+
+    <!--Preferences-->
+    <string name="pref_checkbox_key" translatable="false">pref_checkbox</string>
+    <string name="pref_checkbox_title">Checkbox</string>
+    <string name="pref_show_true">Shown</string>
+    <string name="pref_show_false">Hidden</string>
+    <string name="pref_editTextPref_key" translatable="false">pref_editText</string>
+    <string name="label_settings">Settings</string>
 </resources>

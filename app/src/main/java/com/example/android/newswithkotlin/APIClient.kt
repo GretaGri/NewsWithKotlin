@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-internal object APIClient {
+public object APIClient {
 
     private var retrofit: Retrofit? = null
 

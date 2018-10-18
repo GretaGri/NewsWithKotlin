@@ -63,7 +63,7 @@ class FavoriteRecyclerViewAdapter(val items: ArrayList<News>,
             }
             textViewNewsWebUrl?.text = item.webUrl
             favButton.setImageResource(R.drawable.ic_favorite_red_24dp)
-            favButton.setOnClickListener { view ->
+            favButton.setOnClickListener {
                 deleteNewsFromDatabase(item)
             }
         }

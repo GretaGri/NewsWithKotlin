@@ -9,3 +9,11 @@
 /build
 /captures
 .externalNativeBuild
+.idea/caches/
+.idea/markdown-navigator.xml
+hs_err_pid12380.log
+hs_err_pid14884.log
+hs_err_pid3500.log
+replay_pid12380.log
+replay_pid14884.log
+replay_pid3500.log

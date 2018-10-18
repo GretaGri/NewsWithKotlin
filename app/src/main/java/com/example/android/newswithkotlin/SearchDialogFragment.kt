@@ -12,20 +12,20 @@ class SearchDialogFragment : DialogFragment() {
 
     //callback code referenced from: https://stackoverflow.com/a/14440095/5770629
     //create callback interface
-    interface userQueryListener {
-        fun someEvent(query: String)
+    interface UserQueryListener {
+        fun userAddedSearchParameter(query: String)
     }
 
-    var queryListener: userQueryListener? = null
+    var queryListener: UserQueryListener? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = inflater.inflate(R.layout.fragment_search
+        val view = inflater.inflate(R.layout.fragment_search
                 , container, false)
 
 
         //initialize the callback interface
-        queryListener = activity as userQueryListener
+        queryListener = activity as UserQueryListener
 
 
         val searchView: SearchView = view.findViewById(R.id.search_view)
@@ -44,7 +44,7 @@ class SearchDialogFragment : DialogFragment() {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 //callback the interface with the users query so that action can be performed on that
-                queryListener!!.someEvent(query);
+                queryListener!!.userAddedSearchParameter(query);
 
                 //when users query has been received, dismiss the dialog fragment and do the further operation
                 //dismiss dialog fragment

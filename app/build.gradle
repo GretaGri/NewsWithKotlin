@@ -56,4 +56,6 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'org.jetbrains.anko:anko-common:0.9'
+    //preference screen handling
+    implementation 'com.android.support:preference-v7:27.1.1';
 }
