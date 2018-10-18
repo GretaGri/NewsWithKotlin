@@ -31,29 +31,34 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity(),
         SearchDialogFragment.UserQueryListener,
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        FetchNewsFromApiService.GetNewsList {
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key!!.contains(getString(R.string.pref_checkbox_key))) {
-            val checkBoxStatus = sharedPreferences?.getBoolean(getString(R.string.pref_checkbox_key),
-                    resources.getBoolean(R.bool.pref_show_checkbox_default))
-            Log.v("my_tag", "checkbox checked is: " + checkBoxStatus)
-            if (checkBoxStatus!!) {
-                startBackgroundServiceToFetchNewsAndShowNotification()
-            } else {
-                stopBackgroundServiceToFetchNewsAndShowNotification()
-            }
+            handleNotificationAndBackgroundNewsFetching(sharedPreferences)
         }
     }
+
+    private fun handleNotificationAndBackgroundNewsFetching(sharedPreferences: SharedPreferences?) {
+        val checkBoxStatus = sharedPreferences?.getBoolean(getString(R.string.pref_checkbox_key),
+                resources.getBoolean(R.bool.pref_show_checkbox_default))
+        Log.v("my_tag", "checkbox checked is: " + checkBoxStatus)
+        if (checkBoxStatus!!) {
+            startBackgroundServiceToFetchNewsAndShowNotification()
+        } else {
+            stopBackgroundServiceToFetchNewsAndShowNotification()
+        }
+
+    }
+
 
     private fun stopBackgroundServiceToFetchNewsAndShowNotification() {
         manager?.cancel(alarmApiCallPendingIntent)
     }
 
     private fun startBackgroundServiceToFetchNewsAndShowNotification() {
-        manager?.set(AlarmManager.RTC, System.currentTimeMillis(), alarmApiCallPendingIntent)
+        manager?.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000 * 60 * 60 * 4, alarmApiCallPendingIntent)
     }
 
     //un-register the sharedPreferenceListener
@@ -93,7 +98,7 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState == null) {
             showDialogFragment()
         }
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             showDialogFragment()
         }
         setupViewModel()
@@ -110,6 +115,7 @@ class MainActivity : AppCompatActivity(),
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         //register the sharedPreferenceListener
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        handleNotificationAndBackgroundNewsFetching(sharedPreferences)
 
     }
 
@@ -225,10 +231,5 @@ class MainActivity : AppCompatActivity(),
         } else {
             emptyView.text = getString(R.string.internet_not_connected)
         }
-    }
-
-    override fun onNewsFetched(newsList: ArrayList<News>) {
-        Log.d("my_tag", "fetched news size inside onNewsFetched is: " + newsFromApi.size)
-        recyclerView.adapter = MainRecyclerViewAdapter(newsList, this, newsFromDatabase)
     }
 }

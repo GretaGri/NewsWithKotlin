@@ -40,7 +40,7 @@ class FavoriteWidgetRemoteViewsFactory(val mContext: Context) : RemoteViewsServi
     }
 
     override fun onDataSetChanged() {
-        Log.d("my_tag", "mFavouriteNewsWidgetArrayList size inside onDataSetChanged is: " + mFavouriteNewsWidgetArrayList!!.size)
+        Log.d("my_tag", "mFavouriteNewsWidgetArrayList size inside onDataSetChanged is: " + mFavouriteNewsWidgetArrayList.size)
     }
 
     override fun onDestroy() {

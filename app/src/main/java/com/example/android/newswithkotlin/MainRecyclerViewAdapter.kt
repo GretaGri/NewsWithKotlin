@@ -77,13 +77,13 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
                     favButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
                 }
             }
-            favButton.setOnClickListener { view ->
+            favButton.setOnClickListener {
                 //deleteNews(item, isFav, favButton, item.tags)
                 saveOrDeleteNews(item, isFav, favNews, favButton, item.tags)
             }
             textViewNewsWebUrl?.text = item.webUrl
 
-            newsListItem.setOnClickListener { view ->
+            newsListItem.setOnClickListener {
                 setupNewsDetailsActivity(context, item.webUrl, item.title)
             }
         }
