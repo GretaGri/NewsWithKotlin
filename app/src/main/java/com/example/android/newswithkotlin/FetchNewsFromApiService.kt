@@ -1,6 +1,7 @@
 package com.example.android.newswithkotlin
 
 import android.annotation.TargetApi
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Build
@@ -64,7 +65,12 @@ class FetchNewsFromApiService() : Service() {
         val notificationHelper = NotificationHelper(this)
         val index = Random().nextInt(newsList.size - 1)
         val randomNews = newsList.get(index)
-        val nb = notificationHelper.getNotification("Guardian Top News", randomNews.title)
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        notificationIntent.putParcelableArrayListExtra("newsList", newsList)
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val intent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0)
+        val nb = notificationHelper.getNotification("Guardian Top News", randomNews.title, intent)
         notificationHelper.notify(101, nb.build())
     }
 }

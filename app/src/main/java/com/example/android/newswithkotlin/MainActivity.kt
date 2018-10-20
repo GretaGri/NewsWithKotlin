@@ -97,7 +97,12 @@ class MainActivity : AppCompatActivity(),
         //if there is no news data from earlier time, show the dialog and ask for users input
         if (savedInstanceState == null) {
             showDialogFragment()
+        } else {
+            val newsList = intent.getParcelableArrayListExtra<News>("newsList")
+            Log.d("my_tag", "extra size is: " + newsList.size)
         }
+
+
         fab.setOnClickListener {
             showDialogFragment()
         }
