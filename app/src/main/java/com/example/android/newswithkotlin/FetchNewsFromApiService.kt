@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
 import android.support.annotation.Nullable
 import android.util.Log
@@ -65,8 +66,12 @@ class FetchNewsFromApiService() : Service() {
         val notificationHelper = NotificationHelper(this)
         val index = Random().nextInt(newsList.size - 1)
         val randomNews = newsList.get(index)
+
         val notificationIntent = Intent(this, MainActivity::class.java)
-        notificationIntent.putParcelableArrayListExtra("newsList", newsList)
+        val bundle = Bundle()
+        bundle.putParcelableArrayList("newsList", newsList)
+        notificationIntent.putExtra("newsList", bundle)
+
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val intent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0)

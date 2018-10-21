@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun startBackgroundServiceToFetchNewsAndShowNotification() {
-        manager?.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000 * 60 * 60 * 4, alarmApiCallPendingIntent)
+        manager?.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000 * 60, alarmApiCallPendingIntent)
     }
 
     //un-register the sharedPreferenceListener
@@ -84,7 +84,9 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         setSupportActionBar(toolbar)
-
+        if (intent.hasExtra("newsList")) {
+            Log.d("my_tag", "bundle has extras  ")
+        }
         //initialize views
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -97,10 +99,8 @@ class MainActivity : AppCompatActivity(),
         //if there is no news data from earlier time, show the dialog and ask for users input
         if (savedInstanceState == null) {
             showDialogFragment()
-        } else {
-            val newsList = intent.getParcelableArrayListExtra<News>("newsList")
-            Log.d("my_tag", "extra size is: " + newsList.size)
         }
+
 
 
         fab.setOnClickListener {
@@ -112,6 +112,12 @@ class MainActivity : AppCompatActivity(),
         alarmApiCallPendingIntent = PendingIntent.getBroadcast(this, 0, alarmApiCallIntent, 0)
         manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         setupSharedPreferences()
+        if (intent.hasExtra("newsList")) {
+            Log.d("my_tag", "bundle has extras  ")
+            val newsListBundle = intent.getBundleExtra("newsList")
+            val newsList: ArrayList<News> = newsListBundle.getParcelableArrayList("newsList")
+            Log.d("my_tag", "extra size is: " + newsList.size)
+        }
     }
 
     private fun setupSharedPreferences() {
