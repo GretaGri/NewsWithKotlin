@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(),
     lateinit var queriedForTextView: TextView
     lateinit var progressBar: ProgressBar
 
-    var newsFromApi = ArrayList<News>()
+    var newsFromApi: ArrayList<News>? = null
     var newsFromDatabase = ArrayList<News>()
 
     //handle background news fetching
@@ -84,24 +84,15 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         setSupportActionBar(toolbar)
-        if (intent.hasExtra("newsList")) {
-            Log.d("my_tag", "bundle has extras  ")
-        }
         //initialize views
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi, this, newsFromDatabase)
+
 
         emptyView = findViewById(R.id.empty_view)
         queriedForTextView = findViewById(R.id.queried_for_text_view)
         progressBar = findViewById(R.id.progress_bar)
-
-        //if there is no news data from earlier time, show the dialog and ask for users input
-        if (savedInstanceState == null) {
-            showDialogFragment()
-        }
-
-
+        newsFromApi = ArrayList<News>()
 
         fab.setOnClickListener {
             showDialogFragment()
@@ -112,11 +103,24 @@ class MainActivity : AppCompatActivity(),
         alarmApiCallPendingIntent = PendingIntent.getBroadcast(this, 0, alarmApiCallIntent, 0)
         manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         setupSharedPreferences()
+
         if (intent.hasExtra("newsList")) {
             Log.d("my_tag", "bundle has extras  ")
             val newsListBundle = intent.getBundleExtra("newsList")
-            val newsList: ArrayList<News> = newsListBundle.getParcelableArrayList("newsList")
-            Log.d("my_tag", "extra size is: " + newsList.size)
+            Log.d("my_tag", "newsListBundle received is: " + newsListBundle)
+            if (newsListBundle != null) {
+                val newsList: ArrayList<News> = newsListBundle.getParcelableArrayList("newsList")
+                Log.d("my_tag", "newsList received size is: " + newsList.size)
+                setupRecyclerView(applicationContext, newsList, "")
+            }
+        } else {
+            recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi!!, this, newsFromDatabase)
+
+            //if there is no news data from earlier time, show the dialog and ask for users input
+            if (savedInstanceState == null) {
+                showDialogFragment()
+            }
+
         }
     }
 
@@ -224,7 +228,7 @@ class MainActivity : AppCompatActivity(),
                     arrayListOfNewFromListOfNews.add(news)
                 }
                 newsFromDatabase = arrayListOfNewFromListOfNews
-                recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi, this@MainActivity, newsFromDatabase)
+                recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi!!, this@MainActivity, newsFromDatabase)
 
                 //start the service to fetch widget data
                 fetchWidgetDataInBackgroundService(this@MainActivity)
