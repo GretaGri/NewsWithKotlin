@@ -23,7 +23,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -90,6 +89,7 @@ class MainActivity : AppCompatActivity(),
     //handle background news fetching
     var alarmApiCallPendingIntent: PendingIntent? = null
     var manager: AlarmManager? = null
+    lateinit var searchDialogFragment: DialogFragment
 
     //get users location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -117,9 +117,18 @@ class MainActivity : AppCompatActivity(),
         alarmApiCallPendingIntent = PendingIntent.getBroadcast(this, 0, alarmApiCallIntent, 0)
         manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         setupSharedPreferences()
+
+        //cancel dialog fragment, help from: @link: https://stackoverflow.com/a/13206127
+        searchDialogFragment = SearchDialogFragment()
+        val fm = fragmentManager
+        val trans = fm.beginTransaction()
         if (intent.hasExtra("newsList")) {
             val newsListBundle = intent.getBundleExtra("newsList")
             if (newsListBundle != null) {
+                //cancel dialog fragment, help from: @link: https://stackoverflow.com/a/13206127
+                trans.remove(searchDialogFragment)
+                trans.commit()
+
                 val newsList: ArrayList<News> = newsListBundle.getParcelableArrayList("newsList")
                 emptyView.visibility = View.GONE
                 queriedForTextView.visibility = View.VISIBLE
@@ -168,12 +177,22 @@ class MainActivity : AppCompatActivity(),
                     //getting city/locality has help from @link: https://stackoverflow.com/a/2296416
                     val gcd = Geocoder(this@MainActivity, Locale.getDefault());
                     val addresses: List<Address> = gcd.getFromLocation(location!!.latitude, location.longitude, 1);
-                    if (addresses.size > 0) {
-                        Log.d("my_tag", "address is: " + addresses.get(0).getLocality())
+                    if (addresses.isNotEmpty()) {
+                        saveLocationToSharedPreference(addresses)
                     } else {
                         // do your stuff
                     }
                 }
+    }
+
+    private fun saveLocationToSharedPreference(addresses: List<Address>) {
+        // save token
+        val locationPreference: SharedPreferences = getSharedPreferences("location", Context.MODE_PRIVATE);
+        val editor: SharedPreferences.Editor = locationPreference.edit();
+        editor.putString("city", addresses.get(0).getLocality())
+        editor.putString("country", addresses.get(0).countryName)
+        editor.commit()
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
@@ -206,7 +225,6 @@ class MainActivity : AppCompatActivity(),
 
     private fun showDialogFragment() {
         queriedForTextView.visibility = View.GONE
-        val searchDialogFragment = SearchDialogFragment() as DialogFragment
         val ft = fragmentManager
         searchDialogFragment.show(ft, "dialog")
     }
