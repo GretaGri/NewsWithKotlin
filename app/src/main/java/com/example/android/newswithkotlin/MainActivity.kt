@@ -15,7 +15,6 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -32,8 +31,7 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity(),
         SearchDialogFragment.UserQueryListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
-
-
+    
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key!!.contains(getString(R.string.pref_checkbox_key))) {
             handleNotificationAndBackgroundNewsFetching(sharedPreferences)
@@ -43,15 +41,12 @@ class MainActivity : AppCompatActivity(),
     private fun handleNotificationAndBackgroundNewsFetching(sharedPreferences: SharedPreferences?) {
         val checkBoxStatus = sharedPreferences?.getBoolean(getString(R.string.pref_checkbox_key),
                 resources.getBoolean(R.bool.pref_show_checkbox_default))
-        Log.v("my_tag", "checkbox checked is: " + checkBoxStatus)
         if (checkBoxStatus!!) {
             startBackgroundServiceToFetchNewsAndShowNotification()
         } else {
             stopBackgroundServiceToFetchNewsAndShowNotification()
         }
-
     }
-
 
     private fun stopBackgroundServiceToFetchNewsAndShowNotification() {
         manager?.cancel(alarmApiCallPendingIntent)
@@ -84,43 +79,41 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         setSupportActionBar(toolbar)
-        //initialize views
-        recyclerView = findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
 
         emptyView = findViewById(R.id.empty_view)
         queriedForTextView = findViewById(R.id.queried_for_text_view)
         progressBar = findViewById(R.id.progress_bar)
         newsFromApi = ArrayList<News>()
 
+        //initialize views
+        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi!!, this, newsFromDatabase)
+
         fab.setOnClickListener {
             showDialogFragment()
         }
-        setupViewModel()
         //handle background news fetch mechanism
         val alarmApiCallIntent = Intent(this, AlarmApiCallReceiver::class.java)
         alarmApiCallPendingIntent = PendingIntent.getBroadcast(this, 0, alarmApiCallIntent, 0)
         manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         setupSharedPreferences()
-
         if (intent.hasExtra("newsList")) {
-            Log.d("my_tag", "bundle has extras  ")
             val newsListBundle = intent.getBundleExtra("newsList")
-            Log.d("my_tag", "newsListBundle received is: " + newsListBundle)
             if (newsListBundle != null) {
                 val newsList: ArrayList<News> = newsListBundle.getParcelableArrayList("newsList")
-                Log.d("my_tag", "newsList received size is: " + newsList.size)
-                setupRecyclerView(applicationContext, newsList, "")
+                emptyView.visibility = View.GONE
+                queriedForTextView.visibility = View.VISIBLE
+                queriedForTextView.text = getString(R.string.queried_for_top_news)
+                recyclerView.visibility = View.VISIBLE
+                recyclerView.adapter = MainRecyclerViewAdapter(newsList, this, newsFromDatabase)
             }
         } else {
-            recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi!!, this, newsFromDatabase)
-
+            setupViewModel()
             //if there is no news data from earlier time, show the dialog and ask for users input
             if (savedInstanceState == null) {
                 showDialogFragment()
             }
-
         }
     }
 
@@ -162,7 +155,6 @@ class MainActivity : AppCompatActivity(),
                     progressBar.visibility = View.GONE
                     newsFromApi = resource?.response?.newsItem!!
                     setupRecyclerView(applicationContext, resource.response.newsItem, usersQuery)
-
                 }
             }
 
@@ -185,7 +177,6 @@ class MainActivity : AppCompatActivity(),
                     recyclerView.adapter = MainRecyclerViewAdapter(listOfNews, context, newsFromDatabase)
                 }
             }
-
         }
     }
 

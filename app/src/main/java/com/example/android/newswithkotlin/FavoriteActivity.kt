@@ -33,7 +33,6 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
@@ -68,6 +67,8 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
     }
 
     fun setupRecyclerView(context: Context, listOfNews: ArrayList<News>) {
+        queriedForTextView.visibility = View.VISIBLE
+        queriedForTextView.text = getString(R.string.queried_for_favorite_news)
         recyclerView.visibility = View.VISIBLE
         recyclerView.adapter = FavoriteRecyclerViewAdapter(listOfNews, context)
     }

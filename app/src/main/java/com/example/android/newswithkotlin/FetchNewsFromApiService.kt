@@ -70,10 +70,7 @@ class FetchNewsFromApiService() : Service() {
         val notificationIntent = Intent(this, MainActivity::class.java)
         val bundle = Bundle()
         bundle.putParcelableArrayList("newsList", newsList)
-        Log.d("my_tag", "parcelable put has size of: " + newsList.size)
         notificationIntent.putExtra("newsList", bundle)
-        Log.d("my_tag", "bundle put is : " + bundle)
-
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val intent = PendingIntent.getActivity(this, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
