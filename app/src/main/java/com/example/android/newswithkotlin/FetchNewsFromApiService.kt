@@ -3,6 +3,7 @@ package com.example.android.newswithkotlin
 import android.annotation.TargetApi
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FetchNewsFromApiService() : Service() {
@@ -44,9 +46,20 @@ class FetchNewsFromApiService() : Service() {
     private fun fetchDataFromGuardianUsingRetrofit() {
         val apiInterface = APIClient.client.create(APIInterface::class.java)
         /**
-        GET List of news
+        GET List of news localized for user
          **/
-        val call = apiInterface.getNewsList("")
+        val locationPreference = getSharedPreferences("location", Context.MODE_PRIVATE)
+        val city = locationPreference.getString("city", "")!!
+        val country = locationPreference.getString("country", "")!!
+        val randomLocation = ""
+        val locationArray = ArrayList<String>()
+        locationArray.add(city)
+        locationArray.add(country)
+        locationArray.add(randomLocation)
+        val random = Random()
+        val index = random.nextInt(locationArray.size - 1)
+        val locationToBeQueried = locationArray.get(index)
+        val call = apiInterface.getNewsList(locationToBeQueried)
         call.enqueue(object : Callback<GsonNewsResponse> {
             override fun onResponse(call: Call<GsonNewsResponse>, response: Response<GsonNewsResponse>?) {
                 val resource = response?.body()
@@ -58,7 +71,6 @@ class FetchNewsFromApiService() : Service() {
                 Log.d(TAG, getString(R.string.failed_server_response, t?.message))
             }
         })
-
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -70,8 +82,13 @@ class FetchNewsFromApiService() : Service() {
         val notificationIntent = Intent(this, MainActivity::class.java)
         val bundle = Bundle()
         bundle.putParcelableArrayList("newsList", newsList)
+        bundle.putInt("intentDescriberInteger", 1)
         notificationIntent.putExtra("newsList", bundle)
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        /*
+        set appropriate flags so that on launch of main screen, the dialog itself
+        cancel out due to intent.getExtras if-else block being running
+        */
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val intent = PendingIntent.getActivity(this, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val nb = notificationHelper.getNotification("Guardian Top News", randomNews.title, intent)
