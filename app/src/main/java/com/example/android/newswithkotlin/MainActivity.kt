@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun startBackgroundServiceToFetchNewsAndShowNotification() {
-        manager?.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000 * 60, alarmApiCallPendingIntent)
+        manager?.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 60 * 4, alarmApiCallPendingIntent)
     }
 
     //un-register the sharedPreferenceListener
