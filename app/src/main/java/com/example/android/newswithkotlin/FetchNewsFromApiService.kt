@@ -59,12 +59,10 @@ class FetchNewsFromApiService() : Service() {
         val random = Random()
         val index = random.nextInt(locationArray.size - 1)
         val locationToBeQueried = locationArray.get(index)
-        Log.d("my_tag", "location to be queried is: " + locationToBeQueried)
         val call = apiInterface.getNewsList(locationToBeQueried)
         call.enqueue(object : Callback<GsonNewsResponse> {
             override fun onResponse(call: Call<GsonNewsResponse>, response: Response<GsonNewsResponse>?) {
                 val resource = response?.body()
-
                 val newsFromApi = resource?.response?.newsItem!!
                 showNotification(newsFromApi)
             }
@@ -84,8 +82,13 @@ class FetchNewsFromApiService() : Service() {
         val notificationIntent = Intent(this, MainActivity::class.java)
         val bundle = Bundle()
         bundle.putParcelableArrayList("newsList", newsList)
+        bundle.putInt("intentDescriberInteger", 1)
         notificationIntent.putExtra("newsList", bundle)
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        /*
+        set appropriate flags so that on launch of main screen, the dialog itself
+        cancel out due to intent.getExtras if-else block being running
+        */
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val intent = PendingIntent.getActivity(this, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val nb = notificationHelper.getNotification("Guardian Top News", randomNews.title, intent)

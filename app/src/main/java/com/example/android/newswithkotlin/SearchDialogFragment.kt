@@ -1,6 +1,7 @@
 package com.example.android.newswithkotlin
 
 import android.app.DialogFragment
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
@@ -44,7 +45,7 @@ class SearchDialogFragment : DialogFragment() {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 //callback the interface with the users query so that action can be performed on that
-                queryListener!!.userAddedSearchParameter(query);
+                queryListener!!.userAddedSearchParameter(query)
 
                 //when users query has been received, dismiss the dialog fragment and do the further operation
                 //dismiss dialog fragment
@@ -54,5 +55,11 @@ class SearchDialogFragment : DialogFragment() {
 
         })
         return view
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        queryListener!!.userAddedSearchParameter("dialogCanceled")
+        dialog.cancel()
     }
 }

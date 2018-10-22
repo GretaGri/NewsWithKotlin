@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -98,6 +99,7 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
         setSupportActionBar(toolbar)
+        Log.d("my_tag", "onCreate called")
 
         emptyView = findViewById(R.id.empty_view)
         queriedForTextView = findViewById(R.id.queried_for_text_view)
@@ -117,25 +119,10 @@ class MainActivity : AppCompatActivity(),
         alarmApiCallPendingIntent = PendingIntent.getBroadcast(this, 0, alarmApiCallIntent, 0)
         manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         setupSharedPreferences()
-
-        //cancel dialog fragment, help from: @link: https://stackoverflow.com/a/13206127
         searchDialogFragment = SearchDialogFragment()
-        val fm = fragmentManager
-        val trans = fm.beginTransaction()
-        if (intent.hasExtra("newsList")) {
-            val newsListBundle = intent.getBundleExtra("newsList")
-            if (newsListBundle != null) {
-                //cancel dialog fragment, help from: @link: https://stackoverflow.com/a/13206127
-                trans.remove(searchDialogFragment)
-                trans.commit()
 
-                val newsList: ArrayList<News> = newsListBundle.getParcelableArrayList("newsList")
-                emptyView.visibility = View.GONE
-                queriedForTextView.visibility = View.VISIBLE
-                queriedForTextView.text = getString(R.string.queried_for_top_news)
-                recyclerView.visibility = View.VISIBLE
-                recyclerView.adapter = MainRecyclerViewAdapter(newsList, this, newsFromDatabase)
-            }
+        if (intent.hasExtra("newsList")) {
+            handleNotificationAndActivityReturn(intent)
         } else {
             setupViewModel()
             //if there is no news data from earlier time, show the dialog and ask for users input
@@ -145,6 +132,30 @@ class MainActivity : AppCompatActivity(),
         }
 
         //handle location
+        handleLocation()
+    }
+
+    private fun handleNotificationAndActivityReturn(incomingIntent: Intent?) {
+        val newsListBundle = incomingIntent?.getBundleExtra("newsList")
+        if (newsListBundle != null) {
+            val newsList: ArrayList<News> = newsListBundle.getParcelableArrayList("newsList")
+            emptyView.visibility = View.GONE
+            queriedForTextView.visibility = View.VISIBLE
+            queriedForTextView.text = getString(R.string.queried_for_top_news)
+            recyclerView.visibility = View.VISIBLE
+            recyclerView.adapter = MainRecyclerViewAdapter(newsList, this, newsFromDatabase)
+        }
+    }
+
+    override fun onNewIntent(incomingIntent: Intent?) {
+        super.onNewIntent(incomingIntent)
+        if (incomingIntent!!.hasExtra("newsList")) {
+            fragmentManager.beginTransaction().remove(searchDialogFragment).commit()
+            handleNotificationAndActivityReturn(incomingIntent)
+        }
+    }
+
+    private fun handleLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (ContextCompat.checkSelfPermission(this@MainActivity,
                         Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -186,7 +197,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun saveLocationToSharedPreference(addresses: List<Address>) {
-        // save token
+        // save location
         val locationPreference: SharedPreferences = getSharedPreferences("location", Context.MODE_PRIVATE);
         val editor: SharedPreferences.Editor = locationPreference.edit();
         editor.putString("city", addresses.get(0).getLocality())
@@ -225,8 +236,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun showDialogFragment() {
         queriedForTextView.visibility = View.GONE
-        val ft = fragmentManager
-        searchDialogFragment.show(ft, "dialog")
+        searchDialogFragment.show(fragmentManager, "dialog")
     }
 
     private fun internetIsActive(): Boolean {
@@ -328,7 +338,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun userAddedSearchParameter(usersQuery: String) {
-        if (internetIsActive()) {
+        if (usersQuery.equals("dialogCanceled")) {
+            queriedForTextView.visibility = View.VISIBLE
+        } else if (internetIsActive()) {
             fetchDataFromGuardianUsingRetrofit(usersQuery)
         } else {
             emptyView.text = getString(R.string.internet_not_connected)
