@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
+import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Color
@@ -40,25 +41,28 @@ class NotificationHelper(base: Context) : ContextWrapper(base) {
     }
 
     //Create the notification that’ll be posted to Channel NewsList//
-    fun getNotification(title: String, body: String): Notification.Builder {
+    fun getNotification(title: String, body: String, intent: PendingIntent): Notification.Builder {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(applicationContext, CHANNEL_NEWS_LIST_ID)
                     .setContentTitle(title)
                     .setContentText(body)
                     .setSmallIcon(R.drawable.ic_warning_black_24dp)
                     .setAutoCancel(true)
+                    .setContentIntent(intent)
         } else {
             Notification.Builder(applicationContext)
                     .setContentTitle(title)
                     .setContentText(body)
                     .setSmallIcon(R.drawable.ic_warning_black_24dp)
                     .setAutoCancel(true)
+                    .setContentIntent(intent)
         }
     }
 
     fun notify(id: Int, notification: Notification) {
         Log.d("my_tag", "notify called")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            notification.flags = notification.flags or Notification.FLAG_AUTO_CANCEL
             manager.notify(id, notification)
         } else {
             manager.notify(NEWS_LIST_NOTIFICATION_ID, notification)

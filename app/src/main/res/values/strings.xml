@@ -5,16 +5,18 @@
     <string name="empty_response_received">No news found. Please try again and make sure to query wit right search parameter!</string>
     <string name="failed_server_response">Couldn\'t connect to the server. The error found is: %1$s</string>
     <string name="internet_not_connected">Internet not connected. Please try again with stable internet connection</string>
-    <string name="loading_news">Loading news. Please wait...</string>
+    <string name="loading_news">Loading news. Please wait…</string>
     <string name="search_hint">What news you\'d like to search for</string>
     <string name="search_queried_for">You searched for: %1$s</string>
     <string name="action_favorite">Favorite</string>
 
     <!--Preferences-->
     <string name="pref_checkbox_key" translatable="false">pref_checkbox</string>
-    <string name="pref_checkbox_title">Checkbox</string>
-    <string name="pref_show_true">Shown</string>
-    <string name="pref_show_false">Hidden</string>
+    <string name="pref_checkbox_title">Notification</string>
+    <string name="pref_show_true">On</string>
+    <string name="pref_show_false">Off</string>
     <string name="pref_editTextPref_key" translatable="false">pref_editText</string>
     <string name="label_settings">Settings</string>
+    <string name="queried_for_top_news">Top new for you</string>
+    <string name="queried_for_favorite_news">Your favorite saved news are here for you</string>
 </resources>
