@@ -1,5 +1,7 @@
 package com.example.android.newswithkotlin
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.DialogFragment
 import android.app.PendingIntent
@@ -8,13 +10,20 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,19 +32,26 @@ import android.widget.TextView
 import com.example.android.newswithkotlin.database.GsonNewsResponse
 import com.example.android.newswithkotlin.database.News
 import com.example.android.newswithkotlin.widget.FetchWidgetDataFromBackgroundService
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.main_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 class MainActivity : AppCompatActivity(),
         SearchDialogFragment.UserQueryListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
-    
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key!!.contains(getString(R.string.pref_checkbox_key))) {
             handleNotificationAndBackgroundNewsFetching(sharedPreferences)
         }
+    }
+
+    companion object {
+        const val MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1078
     }
 
     private fun handleNotificationAndBackgroundNewsFetching(sharedPreferences: SharedPreferences?) {
@@ -74,6 +90,9 @@ class MainActivity : AppCompatActivity(),
     //handle background news fetching
     var alarmApiCallPendingIntent: PendingIntent? = null
     var manager: AlarmManager? = null
+
+    //get users location
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +134,64 @@ class MainActivity : AppCompatActivity(),
                 showDialogFragment()
             }
         }
+
+        //handle location
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if (ContextCompat.checkSelfPermission(this@MainActivity,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
+                            Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this@MainActivity,
+                        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                        MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION)
+            }
+        } else {
+            // Permission has already been granted
+            getLocationAndSaveToSharedPreference()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocationAndSaveToSharedPreference() {
+        fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    // Got last known location. In some rare situations this can be null.
+
+                    //getting city/locality has help from @link: https://stackoverflow.com/a/2296416
+                    val gcd = Geocoder(this@MainActivity, Locale.getDefault());
+                    val addresses: List<Address> = gcd.getFromLocation(location!!.latitude, location.longitude, 1);
+                    if (addresses.size > 0) {
+                        Log.d("my_tag", "address is: " + addresses.get(0).getLocality())
+                    } else {
+                        // do your stuff
+                    }
+                }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    getLocationAndSaveToSharedPreference()
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return
+            }
+        }
     }
 
     private fun setupSharedPreferences() {
@@ -144,6 +221,7 @@ class MainActivity : AppCompatActivity(),
         emptyView.text = getString(R.string.loading_news)
         progressBar.visibility = View.VISIBLE
         val apiInterface = APIClient.client.create(APIInterface::class.java)
+
         /**
         GET List of news
          **/

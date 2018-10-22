@@ -58,4 +58,6 @@ dependencies {
     implementation 'org.jetbrains.anko:anko-common:0.9'
     //preference screen handling
     implementation 'com.android.support:preference-v7:27.1.1';
+    //handle location
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 }
