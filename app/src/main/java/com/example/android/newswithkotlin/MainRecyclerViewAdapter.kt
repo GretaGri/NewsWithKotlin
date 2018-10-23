@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import com.example.android.newswithkotlin.database.AppDatabase
-import com.example.android.newswithkotlin.database.ContributorContent
 import com.example.android.newswithkotlin.database.News
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
@@ -78,8 +77,7 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
                 }
             }
             favButton.setOnClickListener {
-                //deleteNews(item, isFav, favButton, item.tags)
-                saveOrDeleteNews(item, isFav, favNews, favButton, item.tags)
+                saveOrDeleteNews(item, isFav, favNews, favButton)
             }
             textViewNewsWebUrl?.text = item.webUrl
 
@@ -96,29 +94,18 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
 
         }
 
-        private fun saveOrDeleteNews(item: News, isFav: Boolean, favNews: News, imgButton: ImageButton, authorList: ArrayList<ContributorContent>) {
+        private fun saveOrDeleteNews(item: News, isFav: Boolean, favNews: News, imgButton: ImageButton) {
             if (isFav) {
                 AppExecutors.instance.diskIO.execute {
-                    /*greta's suggestion to handle authors NPE
-                            if (authorList.size > 0 && favNews.tags.size > 0)
-                                mDb?.newsDao()?.deleteNewsAuthors(favNews.tags[0])
-                            */
-                    if (authorList.size > 0 && authorList.get(0).apiUrl.length > 0)
-                        mDb?.newsDao()?.deleteNewsAuthors(favNews.tags[0])
                     mDb?.newsDao()?.deleteNews(favNews)
                     val h = Handler(getMainLooper())
-                    h.post(Runnable {
+                    h.post {
                         imgButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
-                    })
+                    }
                 }
             } else {
                 AppExecutors.instance.diskIO.execute {
                     mDb?.newsDao()?.insertNews(item)
-                    if (item.tags.size > 0 && !item.tags.get(0).apiUrl.isEmpty())
-                        mDb?.newsDao()?.insertAuthorsForNews(item.tags[0])
-                    else
-                        mDb?.newsDao()?.insertAuthorsForNews(ContributorContent())
-
                     val h = Handler(getMainLooper())
                     h.post {
                         imgButton.setImageResource(R.drawable.ic_favorite_red_24dp)
