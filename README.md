@@ -1,5 +1,5 @@
 # NewsWithKotlin
-Application for practicing Kotlin (based on Udacity ABND course project News app, uses Guardian API).
+Application for practicing Kotlin (uses Guardian API).
 
 TODO
 ____________________________________________________________
@@ -11,11 +11,12 @@ ____________________________________________________________
 - [X] Gson
 - [X] ConstraintLayout
 - [X] Loaders
-- [ ] Notifications
+- [X] Notifications
 - [ ] Firebase JobDispatcher
 - [X] WebView for news details
 - [X] Widget for favorite news
-
+- [ ] Endless scrolling
+- [ ] DiffUtils
 RESOURCES
 _____________________________________________________________
 

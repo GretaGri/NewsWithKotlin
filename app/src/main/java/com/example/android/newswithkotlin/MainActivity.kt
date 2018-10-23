@@ -162,17 +162,11 @@ class MainActivity : AppCompatActivity(),
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
-                            Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this@MainActivity,
-                        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
-                        MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION)
-            }
+            // No explanation needed, we can request the permission.
+            ActivityCompat.requestPermissions(this@MainActivity,
+                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                    MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION)
+
         } else {
             // Permission has already been granted
             getLocationAndSaveToSharedPreference()
@@ -184,7 +178,6 @@ class MainActivity : AppCompatActivity(),
         fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     // Got last known location. In some rare situations this can be null.
-
                     //getting city/locality has help from @link: https://stackoverflow.com/a/2296416
                     val gcd = Geocoder(this@MainActivity, Locale.getDefault());
                     val addresses: List<Address> = gcd.getFromLocation(location!!.latitude, location.longitude, 1);
