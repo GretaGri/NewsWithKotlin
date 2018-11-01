@@ -60,4 +60,5 @@ dependencies {
     implementation 'com.android.support:preference-v7:27.1.1';
     //handle location
     implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }

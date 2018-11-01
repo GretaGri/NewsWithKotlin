@@ -45,7 +45,14 @@ data class News(
         @Expose
         @SerializedName("tags")
         val tags: ArrayList<ContributerContent> = ArrayList()) : Parcelable {
-    @Ignore
+        fun compareTo(news: News): Any {
+                val compare = news
+                return if (compare.title.equals(this.title) && compare.webUrl.equals(this.webUrl)) {
+                        0
+                } else 1
+        }
+
+        @Ignore
     constructor () : this("title", "webUrl", 0)
 }
 
