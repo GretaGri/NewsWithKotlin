@@ -6,7 +6,9 @@ import com.example.android.newswithkotlin.database.News
 import org.jetbrains.annotations.Nullable
 
 
-class DiffUtilCallback(internal var newList: ArrayList<News>?, internal var oldList: ArrayList<News>?) : DiffUtil.Callback() {
+class DiffUtilCallback(internal var newList: ArrayList<News>?,
+                       internal var oldList: ArrayList<News>?) : DiffUtil.Callback() {
+
     override fun getOldListSize(): Int {
         return if (oldList != null) oldList?.size!! else 0
     }

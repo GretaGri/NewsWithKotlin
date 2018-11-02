@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper.getMainLooper
 import android.support.constraint.ConstraintLayout
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -114,5 +115,16 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
 
             }
         }
+    }
+
+    fun onNewData(newData: ArrayList<News>, dataDromDatabase: ArrayList<News>) {
+        val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(newData, items))
+        diffResult.dispatchUpdatesTo(this)
+        this.items.clear()
+        this.items.addAll(newData)
+        
+        if (favNewsList.isNotEmpty())
+            favNewsList.clear()
+        favNewsList.addAll(dataDromDatabase)
     }
 }
