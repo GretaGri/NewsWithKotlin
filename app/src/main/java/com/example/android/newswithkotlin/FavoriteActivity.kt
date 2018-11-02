@@ -32,6 +32,7 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
     lateinit var recyclerView: RecyclerView
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
+    lateinit var favoriteRecyclerViewAdapter: FavoriteRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +63,8 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
 
         //setup recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = FavoriteRecyclerViewAdapter(ArrayList<News>(), this)
+        favoriteRecyclerViewAdapter = FavoriteRecyclerViewAdapter(ArrayList<News>(), this)
+        recyclerView.adapter = favoriteRecyclerViewAdapter
         handleDatabase()
     }
 
@@ -70,7 +72,8 @@ class FavoriteActivity : AppCompatActivity(), FavoriteNewsFetchingRequestListene
         queriedForTextView.visibility = View.VISIBLE
         queriedForTextView.text = getString(R.string.queried_for_favorite_news)
         recyclerView.visibility = View.VISIBLE
-        recyclerView.adapter = FavoriteRecyclerViewAdapter(listOfNews, context)
+        favoriteRecyclerViewAdapter.onNewData(listOfNews)
+        //recyclerView.adapter = FavoriteRecyclerViewAdapter(listOfNews, context)
     }
 
     private fun handleDatabase() {

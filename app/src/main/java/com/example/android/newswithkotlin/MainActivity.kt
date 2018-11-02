@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity(),
     lateinit var emptyView: TextView
     lateinit var queriedForTextView: TextView
     lateinit var progressBar: ProgressBar
-    lateinit var mainRecyclerViewAdapter: MainRecyclerViewAdapter
 
     var newsFromApi: ArrayList<News>? = null
     var newsFromDatabase = ArrayList<News>()
@@ -110,8 +109,7 @@ class MainActivity : AppCompatActivity(),
         //initialize views
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        mainRecyclerViewAdapter = MainRecyclerViewAdapter(newsFromApi!!, this, newsFromDatabase)
-        recyclerView.adapter = mainRecyclerViewAdapter
+        recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi!!, this, newsFromDatabase)
 
         fab.setOnClickListener {
             showDialogFragment()
@@ -145,8 +143,7 @@ class MainActivity : AppCompatActivity(),
             queriedForTextView.visibility = View.VISIBLE
             queriedForTextView.text = getString(R.string.queried_for_top_news)
             recyclerView.visibility = View.VISIBLE
-            mainRecyclerViewAdapter.onNewData(newsList, newsFromDatabase)
-            //recyclerView.adapter = MainRecyclerViewAdapter(newsList, this, newsFromDatabase)
+            recyclerView.adapter = MainRecyclerViewAdapter(newsList, this, newsFromDatabase)
         }
     }
 
@@ -276,8 +273,7 @@ class MainActivity : AppCompatActivity(),
             recyclerView.visibility = View.VISIBLE
             runOnUiThread {
                 run() {
-                    mainRecyclerViewAdapter.onNewData(listOfNews, newsFromDatabase)
-                    //recyclerView.adapter = MainRecyclerViewAdapter(listOfNews, context, newsFromDatabase)
+                    recyclerView.adapter = MainRecyclerViewAdapter(listOfNews, context, newsFromDatabase)
                 }
             }
         }
@@ -322,8 +318,7 @@ class MainActivity : AppCompatActivity(),
                     arrayListOfNewFromListOfNews.add(news)
                 }
                 newsFromDatabase = arrayListOfNewFromListOfNews
-                mainRecyclerViewAdapter.onNewData(newsFromApi!!, newsFromDatabase)
-                //recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi!!, this@MainActivity, newsFromDatabase)
+                recyclerView.adapter = MainRecyclerViewAdapter(newsFromApi!!, this@MainActivity, newsFromDatabase)
 
                 //start the service to fetch widget data
                 fetchWidgetDataInBackgroundService(this@MainActivity)

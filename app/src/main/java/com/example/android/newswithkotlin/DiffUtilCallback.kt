@@ -1,6 +1,5 @@
 package com.example.android.newswithkotlin
 
-import android.os.Bundle
 import android.support.v7.util.DiffUtil
 import com.example.android.newswithkotlin.database.News
 import org.jetbrains.annotations.Nullable
@@ -28,18 +27,6 @@ class DiffUtilCallback(internal var newList: ArrayList<News>?,
 
     @Nullable
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        val newNews = newList!![newItemPosition]
-        val oldNews = oldList!![oldItemPosition]
-
-        val diff = Bundle()
-        if (!newNews.title.equals(oldNews.title)) {
-            diff.putString("title", newNews.title)
-        }
-        if (!newNews.webUrl.equals(oldNews.webUrl)) {
-            diff.putString("webUrl", newNews.webUrl)
-        }
-        return if (diff.size() == 0) {
-            null
-        } else diff
+        return super.getChangePayload(oldItemPosition, newItemPosition);
     }
 }
