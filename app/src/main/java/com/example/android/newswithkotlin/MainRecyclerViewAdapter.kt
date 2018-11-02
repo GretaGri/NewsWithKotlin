@@ -91,7 +91,6 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
             newsDetailsActivity.putExtra("newsUrl", itemUrl)
             newsDetailsActivity.putExtra("newsTitle", itemTitle)
             context.startActivity(newsDetailsActivity)
-
         }
 
         private fun saveOrDeleteNews(item: News, isFav: Boolean, favNews: News, imgButton: ImageButton) {
