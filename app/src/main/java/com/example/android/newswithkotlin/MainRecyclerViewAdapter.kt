@@ -91,7 +91,6 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
             newsDetailsActivity.putExtra("newsUrl", itemUrl)
             newsDetailsActivity.putExtra("newsTitle", itemTitle)
             context.startActivity(newsDetailsActivity)
-
         }
 
         private fun saveOrDeleteNews(item: News, isFav: Boolean, favNews: News, imgButton: ImageButton) {
@@ -103,6 +102,7 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
                         imgButton.setImageResource(R.drawable.ic_favorite_border_red_24dp)
                     }
                 }
+
             } else {
                 AppExecutors.instance.diskIO.execute {
                     mDb?.newsDao()?.insertNews(item)
@@ -111,7 +111,6 @@ class MainRecyclerViewAdapter(val items: ArrayList<News>,
                         imgButton.setImageResource(R.drawable.ic_favorite_red_24dp)
                     }
                 }
-
             }
         }
     }
